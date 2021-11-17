@@ -35,8 +35,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onPressed: () {
             Navigator.of(context)
                 .pop(); // closing app drawer as well before loggin out
+            // Navigator.of(context)
+            //     .pushReplacementNamed('/'); // to make sure we go to home page
             Navigator.of(context)
-                .pushReplacementNamed('/'); // to make sure we go to home page
+                .pushNamedAndRemoveUntil('/', (route) => false);
             // so the logic there runs every time and no unexpected behaviour for logging out
             Provider.of<Auth>(context, listen: false).logout();
           },

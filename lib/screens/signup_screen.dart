@@ -22,6 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -41,91 +42,92 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w400),
                 ),
                 Spacer(),
-                Expanded(
-                  flex: 3,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: constraints.maxWidth * 0.1,
+                // Expanded(
+                //   flex: 3,
+                // child: SingleChildScrollView(
+                // child:
+                Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: constraints.maxWidth * 0.1,
+                      ),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.grey.shade300,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(20.0),
                           ),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.grey.shade300,
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              hintText: 'Phone/Email',
-                            ),
-                            validator: (value) {
-                              if (value!.isEmpty || !value.contains('@')) {
-                                return 'Invalid email!';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _email = value!;
-                            },
-                          ),
+                          hintText: 'Phone/Email',
                         ),
-                        SizedBox(height: 10),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: constraints.maxWidth * 0.1,
-                          ),
-                          child: TextFormField(
-                            controller: _passwordController,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.grey.shade300,
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              hintText: 'Password',
-                            ),
-                            validator: (value) {
-                              if (value!.isEmpty || value.length < 5) {
-                                return 'Password length must be 6!';
-                              }
-                            },
-                            onSaved: (value) {
-                              _password = value!;
-                            },
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: constraints.maxWidth * 0.1,
-                          ),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.grey.shade300,
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              hintText: 'Confirm Password',
-                            ),
-                            validator: (value) {
-                              if (value != _passwordController.text) {
-                                return 'Passwords do not match';
-                              }
-                            },
-                            onSaved: (value) {
-                              _password = value!;
-                            },
-                          ),
-                        ),
-                      ],
+                        validator: (value) {
+                          if (value!.isEmpty || !value.contains('@')) {
+                            return 'Invalid email!';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _email = value!;
+                        },
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: constraints.maxWidth * 0.1,
+                      ),
+                      child: TextFormField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.grey.shade300,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          hintText: 'Password',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty || value.length < 5) {
+                            return 'Password length must be 6!';
+                          }
+                        },
+                        onSaved: (value) {
+                          _password = value!;
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: constraints.maxWidth * 0.1,
+                      ),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.grey.shade300,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          hintText: 'Confirm Password',
+                        ),
+                        validator: (value) {
+                          if (value != _passwordController.text) {
+                            return 'Passwords do not match';
+                          }
+                        },
+                        onSaved: (value) {
+                          _password = value!;
+                        },
+                      ),
+                    ),
+                  ],
                 ),
+                //   ),
+                // ),
                 Spacer(),
                 if (_isLoading)
                   CircularProgressIndicator()

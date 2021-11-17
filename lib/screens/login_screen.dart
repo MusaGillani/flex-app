@@ -28,115 +28,127 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: LayoutBuilder(
-        builder: (ctx, constraints) => Container(
-          width: constraints.maxWidth,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Spacer(),
-                Text(
-                  'Welcome Back!',
-                  style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w400),
-                ),
-                Spacer(),
-                Expanded(
-                  flex: 2,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: constraints.maxWidth * 0.1,
-                          ),
-                          child: TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.grey.shade300,
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              hintText: 'Phone/Email',
-                            ),
-                            validator: (value) {
-                              if (value!.isEmpty || !value.contains('@')) {
-                                return 'Invalid email!';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _email = value!;
-                            },
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: constraints.maxWidth * 0.1,
-                          ),
-                          child: TextFormField(
-                            obscureText: true,
-                            controller: _passwordController,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.grey.shade300,
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              hintText: 'Password',
-                            ),
-                            validator: (value) {
-                              if (value!.isEmpty || value.length < 5) {
-                                return 'Password length must be 6!';
-                              }
-                            },
-                            onSaved: (value) {
-                              _password = value!;
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
+        builder: (ctx, constraints) => Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Container(
+              height: constraints.maxHeight,
+              width: constraints.maxWidth,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Spacer(),
+                  Text(
+                    'Welcome Back!',
+                    style:
+                        TextStyle(fontSize: 25.0, fontWeight: FontWeight.w400),
                   ),
-                ),
-                Spacer(),
-                if (_isLoading)
-                  CircularProgressIndicator()
-                else
-                  buildYellowButton(
-                    handler: () {
-                      _submit();
-                    },
-                    child: Text(
-                      'LOG IN',
-                      style: TextStyle(
-                        color: Colors.white,
+                  // Spacer(),
+                  // Expanded(
+                  // flex: 2,
+                  // child: SingleChildScrollView(
+                  // child:
+                  Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: constraints.maxWidth * 0.1,
+                        ),
+                        child: TextFormField(
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey.shade300,
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            hintText: 'Phone/Email',
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty || !value.contains('@')) {
+                              return 'Invalid email!';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _email = value!;
+                          },
+                        ),
                       ),
-                    ),
-                    color: Theme.of(context).primaryColor,
-                    h: constraints.maxHeight * 0.1,
-                    w: constraints.maxWidth * 0.8,
-                    radius: 30.0,
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: constraints.maxWidth * 0.1,
+                        ),
+                        child: TextFormField(
+                          obscureText: true,
+                          controller: _passwordController,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.grey.shade300,
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            hintText: 'Password',
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty || value.length < 5) {
+                              return 'Password length must be 6!';
+                            }
+                          },
+                          onSaved: (value) {
+                            _password = value!;
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Forgot Password?',
-                    style: TextStyle(color: Colors.black),
+                  //   ),
+                  // ),
+                  // Spacer(),
+                  Column(
+                    children: [
+                      if (_isLoading)
+                        CircularProgressIndicator()
+                      else
+                        buildYellowButton(
+                          handler: () {
+                            _submit();
+                          },
+                          child: Text(
+                            'LOG IN',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          color: Theme.of(context).primaryColor,
+                          h: constraints.maxHeight * 0.1,
+                          w: constraints.maxWidth * 0.8,
+                          radius: 30.0,
+                        ),
+                      SizedBox(height: 10),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Forgot Password?',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Spacer(),
-              ],
+                  // Spacer(),
+                ],
+              ),
             ),
           ),
         ),
