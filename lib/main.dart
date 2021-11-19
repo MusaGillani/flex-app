@@ -5,13 +5,15 @@ import 'package:firebase_core/firebase_core.dart';
 import './providers/auth.dart';
 
 import './screens/splash_screen.dart';
-import './screens/login_screen.dart';
-import './screens/signup_screen.dart';
+// import './screens/login_screen.dart';
+import './screens/authenticate_screen.dart';
 import './screens/dashboard_screen.dart';
 
 import './screens/home_pages/restaurants.dart';
 import './screens/home_pages/meals.dart';
 import './screens/home_pages/qr.dart';
+
+import './utitlities/constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,8 +46,8 @@ class MyApp extends StatelessWidget {
           ),
           home: auth.isAuth ? DashboardScreen() : SplashScreen(),
           routes: {
-            '/login': (ctx) => LoginScreen(),
-            '/signup': (ctx) => SignUpScreen(),
+            '/login': (ctx) => AuthenticateScreen(AuthMode.Login),
+            '/signup': (ctx) => AuthenticateScreen(AuthMode.Signup),
             '/dashboard': (ctx) => DashboardScreen(),
           },
           onGenerateRoute: (RouteSettings settings) {

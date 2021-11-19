@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
-import '../models/http_exception.dart';
+import '../models/auth_exception.dart';
 import '../widgets/buttons.dart';
 
 // enum AuthMode { Signup, Login }
@@ -114,43 +114,7 @@ class _LoginScreenState extends State<LoginScreen>
                         ),
                       ),
                       SizedBox(height: 10),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ChoiceChip(
-                            // disabledColor: Colors.white,
-                            backgroundColor:
-                                userType != 1 ? Colors.white : null,
-                            side: userType != 1
-                                ? BorderSide(width: 1.0, color: Colors.grey)
-                                : null,
-                            label: Text('Restaurant'),
-                            selected: userType == 1,
-                            onSelected: (selected) {
-                              setState(() {
-                                userType = selected ? 1 : 2;
-                              });
-                            },
-                          ),
-                          SizedBox(width: 10),
-                          ChoiceChip(
-                            // disabledColor: Colors.white,
-                            backgroundColor:
-                                userType != 2 ? Colors.white : null,
-                            side: userType != 2
-                                ? BorderSide(width: 1.0, color: Colors.grey)
-                                : null,
-                            label: Text('Customer'),
-                            selected: userType == 2,
-                            onSelected: (selected) {
-                              setState(() {
-                                userType = selected ? 2 : 1;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
+                      // _userTypeSelector(),
                     ],
                   ),
                   //   ),
@@ -214,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen>
       // Sign user up
       await Provider.of<Auth>(context, listen: false).signup(_email, _password);
       // }
-    } on HttpException catch (error) {
+    } on AuthException catch (error) {
       var errorMessage = 'Authentication Failed';
       if (error.toString().contains('EMAIL_EXISTS')) {
         errorMessage = 'This email is already in use';

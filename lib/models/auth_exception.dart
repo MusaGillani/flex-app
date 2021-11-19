@@ -1,6 +1,6 @@
-class HttpException implements Exception {
+class AuthException implements Exception {
   final String message;
-  HttpException(this.message);
+  AuthException(this.message);
 
   @override
   String toString() {
