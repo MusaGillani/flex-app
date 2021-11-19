@@ -1,8 +1,8 @@
 import 'package:flex/models/auth_exception.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 
-import '../providers/auth.dart';
+import '../providers/auth.dart' as Auth;
 import '../widgets/buttons.dart';
 import '../utitlities/constants.dart';
 
@@ -114,6 +114,7 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
                         ),
                         child: TextFormField(
                           controller: _passwordController,
+                          obscureText: _authMode == AuthMode.Login,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.grey.shade300,
@@ -214,37 +215,37 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
     try {
       if (_authMode == AuthMode.Login) {
         // Log user in
-        await Provider.of<Auth>(context, listen: false)
-            .login(_email, _password);
+        await Auth.login(_email, _password);
       } else {
         // Sign user up
-        await Provider.of<Auth>(context, listen: false)
-            .signup(_email, _password);
+        await Auth.signup(_email, _password);
       }
+      Navigator.pop(context);
     } on AuthException catch (error) {
       final errorMessage = error.toString();
-      _showErrorDialog(errorMessage);
+      await _showErrorDialog(errorMessage);
     } catch (error) {
       final errorMessage = error.toString();
-      _showErrorDialog(errorMessage);
+      await _showErrorDialog(errorMessage);
     }
     setState(() {
       _isLoading = false;
     });
 
-    Navigator.pushNamedAndRemoveUntil(
-        context, '/', (Route<dynamic> route) => false);
+    // Navigator.pushNamedAndRemoveUntil(
+    //     context, '/', (Route<dynamic> route) => false);
   }
 
-  void _showErrorDialog(String message) {
-    showDialog(
+  Future<void> _showErrorDialog(String message) {
+    print(message);
+    return showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('An error Occured'),
         content: Text(message),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(ctx).pop(),
             child: Text('Okay'),
           ),
         ],

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
-import 'package:provider/provider.dart';
-
-import '../providers/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import './home_screen.dart';
 // import './homeNav.dart';
@@ -37,10 +35,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 .pop(); // closing app drawer as well before loggin out
             // Navigator.of(context)
             //     .pushReplacementNamed('/'); // to make sure we go to home page
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/', (route) => false);
+            // Navigator.of(context)
+            //     .pushNamedAndRemoveUntil('/', (route) => false);
             // so the logic there runs every time and no unexpected behaviour for logging out
-            Provider.of<Auth>(context, listen: false).logout();
+            FirebaseAuth.instance.signOut();
           },
           icon: Icon(Icons.exit_to_app),
           label: Text('SignOut'),
