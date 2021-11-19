@@ -101,24 +101,28 @@ class Auth with ChangeNotifier {
     return _authenticate(email, password, 'signInWithPassword');
   }
 
-  Future<bool> tryAutoLogin() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey('userData')) return false;
+  // Future<bool> tryAutoLogin() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   if (!prefs.containsKey('userData')) {
+  //     print('no data in shared prefs');
+  //     return false;
+  //   }
 
-    final extractedUserData =
-        json.decode(prefs.getString('userData')!) as Map<String, Object>;
-    final expiryDate =
-        DateTime.parse(extractedUserData['expiryDate'] as String);
+  //   final extractedUserData =
+  //       json.decode(prefs.getString('userData')!) as Map<String, Object>;
+  //   final expiryDate =
+  //       DateTime.parse(extractedUserData['expiryDate'] as String);
 
-    if (expiryDate.isBefore(DateTime.now())) return false;
+  //   if (expiryDate.isBefore(DateTime.now())) return false;
 
-    _token = extractedUserData['token'] as String;
-    _userId = extractedUserData['userId'] as String;
-    _expiryDate = expiryDate;
-    notifyListeners();
-    _autoLogout();
-    return true;
-  }
+  //   _token = extractedUserData['token'] as String;
+  //   _userId = extractedUserData['userId'] as String;
+  //   _expiryDate = expiryDate;
+  //   notifyListeners();
+  //   _autoLogout();
+  //   print('data in shared prefs');
+  //   return true;
+  // }
 
   Future<void> logout() async {
     _token = null;

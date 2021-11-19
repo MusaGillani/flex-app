@@ -24,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen>
   var _isLoading = false;
   // late AuthMode _authMode = AuthMode.Login;
   final _passwordController = TextEditingController();
+  int userType = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen>
                   // child: SingleChildScrollView(
                   // child:
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(
@@ -110,6 +112,44 @@ class _LoginScreenState extends State<LoginScreen>
                             _password = value!;
                           },
                         ),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ChoiceChip(
+                            // disabledColor: Colors.white,
+                            backgroundColor:
+                                userType != 1 ? Colors.white : null,
+                            side: userType != 1
+                                ? BorderSide(width: 1.0, color: Colors.grey)
+                                : null,
+                            label: Text('Restaurant'),
+                            selected: userType == 1,
+                            onSelected: (selected) {
+                              setState(() {
+                                userType = selected ? 1 : 2;
+                              });
+                            },
+                          ),
+                          SizedBox(width: 10),
+                          ChoiceChip(
+                            // disabledColor: Colors.white,
+                            backgroundColor:
+                                userType != 2 ? Colors.white : null,
+                            side: userType != 2
+                                ? BorderSide(width: 1.0, color: Colors.grey)
+                                : null,
+                            label: Text('Customer'),
+                            selected: userType == 2,
+                            onSelected: (selected) {
+                              setState(() {
+                                userType = selected ? 2 : 1;
+                              });
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
