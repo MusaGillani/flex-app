@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "507808738317",
+    "firebase_url": "https://flex-eater-default-rtdb.firebaseio.com",
+    "project_id": "flex-eater",
+    "storage_bucket": "flex-eater.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507808738317:android:c23739d9d093c516cd3944",
+        "android_client_info": {
+          "package_name": "com.example.flex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "507808738317-hb4292t5ahnv3q7pats2qtic5mnr9e2e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCx4LKSmnVpWhzHXhYajpsjEaulNr9xG2I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "507808738317-hb4292t5ahnv3q7pats2qtic5mnr9e2e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

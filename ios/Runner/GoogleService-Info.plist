@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>507808738317-5dq07ol55mi4eq1esettoedaous5019e.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.507808738317-5dq07ol55mi4eq1esettoedaous5019e</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBztHYhrV5O-aIIRJNPS7kcQL-EGujLM7A</string>
+	<key>GCM_SENDER_ID</key>
+	<string>507808738317</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.flex</string>
+	<key>PROJECT_ID</key>
+	<string>flex-eater</string>
+	<key>STORAGE_BUCKET</key>
+	<string>flex-eater.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:507808738317:ios:cee87018767af920cd3944</string>
+	<key>DATABASE_URL</key>
+	<string>https://flex-eater-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
