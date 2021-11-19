@@ -21,7 +21,7 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey(debugLabel: 'authform-key');
-  int userType = 1;
+  UserMode userType = UserMode.Restaurant;
 
   @override
   void initState() {
@@ -215,10 +215,18 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
     try {
       if (_authMode == AuthMode.Login) {
         // Log user in
-        await Auth.login(_email, _password);
+        await Auth.login(
+          _email,
+          _password,
+          userType == UserMode.Restaurant ? 'restaurant' : 'customer',
+        );
       } else {
         // Sign user up
-        await Auth.signup(_email, _password);
+        await Auth.signup(
+          _email,
+          _password,
+          userType == UserMode.Restaurant ? 'restaurant' : 'customer',
+        );
       }
       Navigator.pop(context);
     } on AuthException catch (error) {
@@ -260,28 +268,31 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
       children: [
         ChoiceChip(
           // disabledColor: Colors.white,
-          backgroundColor: userType != 1 ? Colors.white : null,
-          side:
-              userType != 1 ? BorderSide(width: 1.0, color: Colors.grey) : null,
+          backgroundColor:
+              userType != UserMode.Restaurant ? Colors.white : null,
+          side: userType != UserMode.Restaurant
+              ? BorderSide(width: 1.0, color: Colors.grey)
+              : null,
           label: Text('Restaurant'),
-          selected: userType == 1,
+          selected: userType == UserMode.Restaurant,
           onSelected: (selected) {
             setState(() {
-              userType = selected ? 1 : 2;
+              userType = selected ? UserMode.Restaurant : UserMode.Customer;
             });
           },
         ),
         SizedBox(width: 10),
         ChoiceChip(
           // disabledColor: Colors.white,
-          backgroundColor: userType != 2 ? Colors.white : null,
-          side:
-              userType != 2 ? BorderSide(width: 1.0, color: Colors.grey) : null,
+          backgroundColor: userType != UserMode.Customer ? Colors.white : null,
+          side: userType != UserMode.Customer
+              ? BorderSide(width: 1.0, color: Colors.grey)
+              : null,
           label: Text('Customer'),
-          selected: userType == 2,
+          selected: userType == UserMode.Customer,
           onSelected: (selected) {
             setState(() {
-              userType = selected ? 2 : 1;
+              userType = selected ? UserMode.Customer : UserMode.Restaurant;
             });
           },
         ),
