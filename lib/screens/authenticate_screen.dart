@@ -1,8 +1,8 @@
 import 'package:flex/models/auth_exception.dart';
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 
-import '../providers/auth.dart' as Auth;
+import '../providers/auth.dart'; // as Auth;
 import '../widgets/buttons.dart';
 import '../utitlities/constants.dart';
 
@@ -215,19 +215,20 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
     try {
       if (_authMode == AuthMode.Login) {
         // Log user in
-        await Auth.login(
+        await Provider.of<Auth>(context, listen: false).login(
           _email,
           _password,
           userType == UserMode.Restaurant ? 'restaurant' : 'customer',
         );
       } else {
         // Sign user up
-        await Auth.signup(
+        await Provider.of<Auth>(context, listen: false).signup(
           _email,
           _password,
           userType == UserMode.Restaurant ? 'restaurant' : 'customer',
         );
       }
+      print('from submit: ${Provider.of<Auth>(context, listen: false).isAuth}');
       Navigator.pop(context);
     } on AuthException catch (error) {
       final errorMessage = error.toString();
@@ -235,13 +236,14 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
     } catch (error) {
       final errorMessage = error.toString();
       await _showErrorDialog(errorMessage);
-    }
-    setState(() {
-      _isLoading = false;
-    });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
 
-    // Navigator.pushNamedAndRemoveUntil(
-    //     context, '/', (Route<dynamic> route) => false);
+      // Navigator.pushNamedAndRemoveUntil(
+      //     context, '/', (Route<dynamic> route) => false);
+    }
   }
 
   Future<void> _showErrorDialog(String message) {
