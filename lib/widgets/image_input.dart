@@ -51,7 +51,8 @@ class _ImageInputState extends State<ImageInput> {
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
-    return Flexible(
+    return Container(
+      height: deviceSize.height * 0.25,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.1),
         child: Column(

@@ -16,6 +16,8 @@ class _MealFormState extends State<MealForm> {
 
   List<Widget> _ingredientEntry = [];
   List<String> _ingredients = [];
+  String _mealName = '';
+  int _price = 0;
 
   var init = true;
   late final Size deviceSize;
@@ -71,6 +73,18 @@ class _MealFormState extends State<MealForm> {
             style: TextStyle(color: Colors.grey.shade400, fontSize: 15),
           ),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+
+              Navigator.of(context).pop();
+            },
+          ),
           actions: [
             TextButton.icon(
               label: Text('Add Meal'),
@@ -85,12 +99,12 @@ class _MealFormState extends State<MealForm> {
             ctx,
             constraints,
           ) =>
-              SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Container(
-                height: constraints.maxHeight,
-                width: constraints.maxWidth,
+              Form(
+            key: _formKey,
+            child: Container(
+              height: constraints.maxHeight,
+              width: constraints.maxWidth,
+              child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -106,32 +120,38 @@ class _MealFormState extends State<MealForm> {
                         }
                         return null;
                       },
-                      onSaved: (String? value) {},
+                      onSaved: (String? value) {
+                        _mealName = value!;
+                      },
                       keyboard: TextInputType.name,
                     ),
-                    SizedBox(height: 10),
+                    // SizedBox(height: 10),
                     _buildTextFormField(
                       constraints,
                       hintText: 'price \$',
                       validator: (String? value) {
                         if (value!.isEmpty) {
                           return 'required!';
+                        } else if (int.parse(value) < 0) {
+                          return 'enter a valid price!';
                         }
                         return null;
                       },
-                      onSaved: (String? value) {},
+                      onSaved: (String? value) {
+                        _price = int.parse(value!);
+                      },
                       keyboard: TextInputType.number,
                     ),
-                    SizedBox(height: 10),
                     Text('Enter Ingredients: '),
-                    Expanded(
-                      child: ListView.separated(
-                        itemCount: _ingredientEntry.length,
-                        itemBuilder: (_, i) => _ingredientEntry[i],
-                        separatorBuilder: (_, i) => SizedBox(height: 10),
-                      ),
-                    ),
-                    // ..._ingredientEntry,
+                    SizedBox(height: 10),
+                    // Expanded(
+                    //   child: ListView.separated(
+                    //     itemCount: _ingredientEntry.length,
+                    //     itemBuilder: (_, i) => _ingredientEntry[i],
+                    //     separatorBuilder: (_, i) => SizedBox(height: 10),
+                    //   ),
+                    // ),
+                    ..._ingredientEntry,
                   ],
                 ),
               ),
@@ -183,12 +203,6 @@ class _MealFormState extends State<MealForm> {
     });
   }
 
-  // Widget _buildIngredientSelector() {
-  //   return ListTile(
-  //     title: _buildTextFormField(constraints, hintText: hintText, validator: validator, onSaved: onSaved, keyboard: keyboard),
-  //   );
-  // }
-
   Widget _buildTextFormField(
     BoxConstraints constraints, {
     required String hintText,
@@ -197,8 +211,10 @@ class _MealFormState extends State<MealForm> {
     required TextInputType keyboard,
   }) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: constraints.maxWidth * 0.1,
+      padding: EdgeInsets.only(
+        right: constraints.maxWidth * 0.1,
+        left: constraints.maxWidth * 0.1,
+        bottom: 10,
       ),
       child: TextFormField(
         keyboardType: keyboard,
