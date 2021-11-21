@@ -67,7 +67,7 @@ class _MealFormState extends State<MealForm> {
         appBar: AppBar(
           backgroundColor: Colors.pink.shade50,
           title: Text(
-            'Restaurants',
+            'Meals',
             style: TextStyle(color: Colors.grey.shade400, fontSize: 15),
           ),
           centerTitle: true,
@@ -95,7 +95,7 @@ class _MealFormState extends State<MealForm> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 10),
-                    ImageInput(_selectImage),
+                    ImageInput(_selectImage, 'images/meal.png'),
                     SizedBox(height: 10),
                     _buildTextFormField(
                       constraints,
