@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import './image_input.dart';
 
 class MealForm extends StatefulWidget {
   const MealForm({Key? key}) : super(key: key);
@@ -9,7 +12,7 @@ class MealForm extends StatefulWidget {
 
 class _MealFormState extends State<MealForm> {
   final GlobalKey<FormState> _formKey = GlobalKey(debugLabel: 'mealform-key');
-  // String? _dropDownValue = 'Fruits';
+  File? _pickedImage;
 
   List<Widget> _ingredientEntry = [];
   List<String> _ingredients = [];
@@ -45,6 +48,10 @@ class _MealFormState extends State<MealForm> {
     init = false;
   }
 
+  void _selectImage(File myPickedImage) {
+    _pickedImage = myPickedImage;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -56,7 +63,7 @@ class _MealFormState extends State<MealForm> {
         }
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        // resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Colors.pink.shade50,
           title: Text(
@@ -65,9 +72,11 @@ class _MealFormState extends State<MealForm> {
           ),
           centerTitle: true,
           actions: [
-            IconButton(
+            TextButton.icon(
+              label: Text('Add Meal'),
               icon: Icon(Icons.check),
               onPressed: _submit,
+              style: TextButton.styleFrom(primary: Colors.black),
             ),
           ],
         ),
@@ -76,51 +85,55 @@ class _MealFormState extends State<MealForm> {
             ctx,
             constraints,
           ) =>
-              Container(
-            height: constraints.maxHeight,
-            width: constraints.maxWidth,
+              SingleChildScrollView(
             child: Form(
               key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height: 10),
-                  _buildTextFormField(
-                    constraints,
-                    hintText: 'meal name',
-                    validator: (String? value) {
-                      if (value!.isEmpty) {
-                        return 'required!';
-                      }
-                      return null;
-                    },
-                    onSaved: (String? value) {},
-                    keyboard: TextInputType.name,
-                  ),
-                  SizedBox(height: 10),
-                  _buildTextFormField(
-                    constraints,
-                    hintText: 'price \$',
-                    validator: (String? value) {
-                      if (value!.isEmpty) {
-                        return 'required!';
-                      }
-                      return null;
-                    },
-                    onSaved: (String? value) {},
-                    keyboard: TextInputType.number,
-                  ),
-                  SizedBox(height: 10),
-                  Text('Enter Ingredients: '),
-                  Expanded(
-                    child: ListView.separated(
-                      itemCount: _ingredientEntry.length,
-                      itemBuilder: (_, i) => _ingredientEntry[i],
-                      separatorBuilder: (_, i) => SizedBox(height: 10),
+              child: Container(
+                height: constraints.maxHeight,
+                width: constraints.maxWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 10),
+                    ImageInput(_selectImage),
+                    SizedBox(height: 10),
+                    _buildTextFormField(
+                      constraints,
+                      hintText: 'meal name',
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return 'required!';
+                        }
+                        return null;
+                      },
+                      onSaved: (String? value) {},
+                      keyboard: TextInputType.name,
                     ),
-                  ),
-                  // ..._ingredientEntry,
-                ],
+                    SizedBox(height: 10),
+                    _buildTextFormField(
+                      constraints,
+                      hintText: 'price \$',
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return 'required!';
+                        }
+                        return null;
+                      },
+                      onSaved: (String? value) {},
+                      keyboard: TextInputType.number,
+                    ),
+                    SizedBox(height: 10),
+                    Text('Enter Ingredients: '),
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: _ingredientEntry.length,
+                        itemBuilder: (_, i) => _ingredientEntry[i],
+                        separatorBuilder: (_, i) => SizedBox(height: 10),
+                      ),
+                    ),
+                    // ..._ingredientEntry,
+                  ],
+                ),
               ),
             ),
           ),
