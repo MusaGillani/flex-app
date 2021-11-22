@@ -103,7 +103,7 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
                             return null;
                           },
                           onSaved: (value) {
-                            _email = value!;
+                            _email = value!.trimRight();
                           },
                         ),
                       ),
