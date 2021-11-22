@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:path/path.dart' as path;
 
@@ -11,6 +12,7 @@ import 'package:path/path.dart' as path;
 final _auth = FirebaseAuth.instance;
 final _firestore = FirebaseFirestore.instance;
 final _storage = FirebaseStorage.instance;
+final uuid = Uuid();
 
 /// Storing res details in collection named restaurants in firestore
 /// Storing res images in res_images folder in cloud storage
@@ -76,5 +78,42 @@ Future<List<String>> getRes() async {
     resData['closeTime'], // 4
     resData['imageUrl'], // 5
   ];
+}
+
+Future<void> addMeal({
+  required String resName,
+  required String mealName,
+  required String price,
+  required List<String> ingredients,
+  required File img,
+}) async {
+  final String resUid = _auth.currentUser!.uid;
+  final mealsCollection = _firestore.collection('meals');
+  final String fileExt = path.extension(img.path);
+  final String mealUid = uuid.v1();
+
+  /// meal_images/res uid/mealuid.jpg
+  final ref = _storage
+      .ref()
+      .child('meal_images')
+      .child('$resUid')
+      .child('$mealUid$fileExt');
+
+  await ref.putFile(img);
+
+  final url = await ref.getDownloadURL();
+
+  /// meals / which res (res uid) / meal uid (one meal entry) / meal data
+  await mealsCollection.doc(resUid).collection('menu').doc(mealUid).set(
+    <String, dynamic>{
+      'resName': resName,
+      'mealName': mealName,
+      'price': price,
+      'ingredients': ingredients,
+      'imageUrl': url,
+    },
+  );
+
+  log('meal added!');
 }
 // }

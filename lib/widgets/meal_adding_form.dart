@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import './image_input.dart';
+import '../providers/firestore.dart' as firestore;
 
 class MealForm extends StatefulWidget {
   const MealForm({Key? key}) : super(key: key);
@@ -10,10 +12,13 @@ class MealForm extends StatefulWidget {
   _MealFormState createState() => _MealFormState();
 }
 
+// TODO show popup when done, and pop screen
 class _MealFormState extends State<MealForm> {
   final GlobalKey<FormState> _formKey = GlobalKey(debugLabel: 'mealform-key');
-  File? _pickedImage;
 
+  bool _isLoading = false;
+
+  File? _pickedImage;
   List<Widget> _ingredientEntry = [];
   List<String> _ingredients = [];
   String _mealName = '';
@@ -94,70 +99,72 @@ class _MealFormState extends State<MealForm> {
             ),
           ],
         ),
-        body: LayoutBuilder(
-          builder: (
-            ctx,
-            constraints,
-          ) =>
-              Form(
-            key: _formKey,
-            child: Container(
-              height: constraints.maxHeight,
-              width: constraints.maxWidth,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 10),
-                    ImageInput(_selectImage, 'images/meal.png'),
-                    SizedBox(height: 10),
-                    _buildTextFormField(
-                      constraints,
-                      hintText: 'meal name',
-                      validator: (String? value) {
-                        if (value!.isEmpty) {
-                          return 'required!';
-                        }
-                        return null;
-                      },
-                      onSaved: (String? value) {
-                        _mealName = value!;
-                      },
-                      keyboard: TextInputType.name,
+        body: _isLoading
+            ? Center(child: CircularProgressIndicator())
+            : LayoutBuilder(
+                builder: (
+                  ctx,
+                  constraints,
+                ) =>
+                    Form(
+                  key: _formKey,
+                  child: Container(
+                    height: constraints.maxHeight,
+                    width: constraints.maxWidth,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 10),
+                          ImageInput(_selectImage, 'images/meal.png'),
+                          SizedBox(height: 10),
+                          _buildTextFormField(
+                            constraints,
+                            hintText: 'meal name',
+                            validator: (String? value) {
+                              if (value!.isEmpty) {
+                                return 'required!';
+                              }
+                              return null;
+                            },
+                            onSaved: (String? value) {
+                              _mealName = value!;
+                            },
+                            keyboard: TextInputType.name,
+                          ),
+                          // SizedBox(height: 10),
+                          _buildTextFormField(
+                            constraints,
+                            hintText: 'price \$',
+                            validator: (String? value) {
+                              if (value!.isEmpty) {
+                                return 'required!';
+                              } else if (int.parse(value) < 0) {
+                                return 'enter a valid price!';
+                              }
+                              return null;
+                            },
+                            onSaved: (String? value) {
+                              _price = int.parse(value!);
+                            },
+                            keyboard: TextInputType.number,
+                          ),
+                          Text('Enter Ingredients: '),
+                          SizedBox(height: 10),
+                          // Expanded(
+                          //   child: ListView.separated(
+                          //     itemCount: _ingredientEntry.length,
+                          //     itemBuilder: (_, i) => _ingredientEntry[i],
+                          //     separatorBuilder: (_, i) => SizedBox(height: 10),
+                          //   ),
+                          // ),
+                          ..._ingredientEntry,
+                        ],
+                      ),
                     ),
-                    // SizedBox(height: 10),
-                    _buildTextFormField(
-                      constraints,
-                      hintText: 'price \$',
-                      validator: (String? value) {
-                        if (value!.isEmpty) {
-                          return 'required!';
-                        } else if (int.parse(value) < 0) {
-                          return 'enter a valid price!';
-                        }
-                        return null;
-                      },
-                      onSaved: (String? value) {
-                        _price = int.parse(value!);
-                      },
-                      keyboard: TextInputType.number,
-                    ),
-                    Text('Enter Ingredients: '),
-                    SizedBox(height: 10),
-                    // Expanded(
-                    //   child: ListView.separated(
-                    //     itemCount: _ingredientEntry.length,
-                    //     itemBuilder: (_, i) => _ingredientEntry[i],
-                    //     separatorBuilder: (_, i) => SizedBox(height: 10),
-                    //   ),
-                    // ),
-                    ..._ingredientEntry,
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: _addField,
           label: const Text('Add Ingredient'),
@@ -168,9 +175,36 @@ class _MealFormState extends State<MealForm> {
     );
   }
 
-  void _submit() {
-    if (!_formKey.currentState!.validate()) return;
+  void _submit() async {
+    if (!_formKey.currentState!.validate() && _pickedImage != null) return;
     _formKey.currentState!.save();
+
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      // await Provider.of<FireStoreDB>(context, listen: false)
+      await firestore.addMeal(
+        resName: 'resName',
+        mealName: _mealName,
+        price: _price.toString(),
+        ingredients: _ingredients,
+        img: _pickedImage!,
+      );
+
+      log('mealName $_mealName');
+      log('price $_price');
+      for (var i in _ingredients) {
+        log('$i');
+      }
+    } on Exception catch (e) {
+      print(e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+
     // for (var item in _ingredients) {
     //   print(item);
     // }
