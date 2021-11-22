@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/auth.dart';
 
 import '../../widgets/restaurant_details_view.dart';
 
@@ -6,6 +9,7 @@ class Restaurants extends StatelessWidget {
   const Restaurants({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    bool res = Provider.of<Auth>(context, listen: false).userMode;
     return ResDetails();
   }
 }

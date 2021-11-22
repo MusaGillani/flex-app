@@ -3,14 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flex/models/auth_exception.dart';
+import '../utitlities/constants.dart';
 
 final _firestore = FirebaseFirestore.instance;
 final usersCollection = _firestore.collection('users');
-enum AuthStatus { loggedIn, SignedOut }
 
 class Auth with ChangeNotifier {
   final _auth = FirebaseAuth.instance;
   var _authStatus = AuthStatus.SignedOut;
+  var _userMode = UserMode.Restaurant;
 
   bool get isAuth {
     // _user.listen(
@@ -28,6 +29,15 @@ class Auth with ChangeNotifier {
   //   return _auth.authStateChanges();
   // }
 
+  // set userMode(UserMode user) {
+  //   this._userMode = user;
+  //   notifyListeners();
+  // }
+
+  bool get userMode {
+    return this._userMode == UserMode.Restaurant;
+  }
+
   Future<void> signup(String email, String password, String userType) async {
     try {
       final authResult = await _auth.createUserWithEmailAndPassword(
@@ -38,6 +48,8 @@ class Auth with ChangeNotifier {
       });
       print('signup success');
       _authStatus = AuthStatus.loggedIn;
+      _userMode =
+          userType == 'restaurant' ? UserMode.Restaurant : UserMode.Customer;
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       throw AuthException(e.code);
@@ -65,6 +77,8 @@ class Auth with ChangeNotifier {
         throw AuthException("not registered with $userType user type!");
       else {
         _authStatus = AuthStatus.loggedIn;
+        _userMode =
+            userType == 'restaurant' ? UserMode.Restaurant : UserMode.Customer;
         notifyListeners();
         print('login success');
         print('auth status: ' + _authStatus.toString());
