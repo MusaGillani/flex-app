@@ -2,7 +2,9 @@ import 'dart:io';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
 
+import '../providers/firestore.dart' as firestore;
 import './image_input.dart';
 
 class ResDetails extends StatefulWidget {
@@ -15,6 +17,7 @@ class ResDetails extends StatefulWidget {
 class _ResDetailsState extends State<ResDetails> {
   final GlobalKey<FormState> _formKey = GlobalKey(debugLabel: 'resform-key');
   bool init = true;
+  bool _isLoading = false;
   bool _readOnly = false;
   late final Size deviceSize;
 
@@ -90,160 +93,159 @@ class _ResDetailsState extends State<ResDetails> {
               ),
             ],
           ),
-          body: LayoutBuilder(
-            builder: (
-              ctx,
-              constraints,
-            ) =>
-                Form(
-              key: _formKey,
-              child: Container(
-                height: constraints.maxHeight,
-                width: constraints.maxWidth,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 10),
-                      ImageInput(_selectImage, 'images/restaurant.png'),
-                      SizedBox(height: 10),
-                      _buildTextFormField(
-                        constraints,
-                        hintText: 'restaurant name',
-                        validator: (String? value) {
-                          if (value!.isEmpty) {
-                            return 'required!';
-                          }
-                          return null;
-                        },
-                        onSaved: (String? value) {
-                          _resName = value!;
-                        },
-                        keyboard: TextInputType.name,
-                      ),
-                      SizedBox(height: 10),
-                      _buildTextFormField(
-                        constraints,
-                        hintText: 'website',
-                        validator: (String? value) {
-                          if (value!.isEmpty) {
-                            return 'required!';
-                          }
-                          return null;
-                        },
-                        onSaved: (String? value) {
-                          _website = value!;
-                        },
-                        keyboard: TextInputType.name,
-                      ),
-                      SizedBox(height: 10),
-                      _buildTextFormField(
-                        constraints,
-                        hintText: 'description',
-                        validator: (String? value) {
-                          if (value!.isEmpty) {
-                            return 'required!';
-                          }
-                          return null;
-                        },
-                        onSaved: (String? value) {
-                          _desc = value!;
-                        },
-                        keyboard: TextInputType.name,
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildTextFormField(
+          body: _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : LayoutBuilder(
+                  builder: (
+                    ctx,
+                    constraints,
+                  ) =>
+                      Form(
+                    key: _formKey,
+                    child: Container(
+                      height: constraints.maxHeight,
+                      width: constraints.maxWidth,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 10),
+                            ImageInput(_selectImage, 'images/restaurant.png'),
+                            SizedBox(height: 10),
+                            _buildTextFormField(
                               constraints,
-                              right: false,
-                              readOnly: true,
-                              hintText: 'Opening time',
-                              controller: _openTimectrl,
-                              onTap: () async {
-                                TimeOfDay? selectedTime24Hour =
-                                    await showTimePicker(
-                                  context: context,
-                                  initialTime:
-                                      const TimeOfDay(hour: 09, minute: 15),
-                                  builder:
-                                      (BuildContext context, Widget? child) {
-                                    return MediaQuery(
-                                      data: MediaQuery.of(context).copyWith(
-                                          alwaysUse24HourFormat: true),
-                                      child: child!,
-                                    );
-                                  },
-                                );
-                                if (selectedTime24Hour != null) {
-                                  _openTimectrl.text =
-                                      selectedTime24Hour.format(context);
-                                }
-                              },
+                              hintText: 'restaurant name',
                               validator: (String? value) {
-                                if (value!.isEmpty) return 'required!';
+                                if (value!.isEmpty) {
+                                  return 'required!';
+                                }
                                 return null;
                               },
                               onSaved: (String? value) {
-                                _openingHours = value!;
+                                _resName = value!;
                               },
-                              keyboard: TextInputType.number,
+                              keyboard: TextInputType.name,
                             ),
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: _buildTextFormField(
+                            SizedBox(height: 10),
+                            _buildTextFormField(
                               constraints,
-                              left: false,
-                              readOnly: true,
-                              hintText: 'Closing time',
-                              controller: _closeTimectrl,
-                              onTap: () async {
-                                TimeOfDay? selectedTime24Hour =
-                                    await showTimePicker(
-                                  context: context,
-                                  initialTime:
-                                      const TimeOfDay(hour: 22, minute: 00),
-                                  builder:
-                                      (BuildContext context, Widget? child) {
-                                    return MediaQuery(
-                                      data: MediaQuery.of(context).copyWith(
-                                          alwaysUse24HourFormat: true),
-                                      child: child!,
-                                    );
-                                  },
-                                );
-                                if (selectedTime24Hour != null) {
-                                  _closeTimectrl.text =
-                                      selectedTime24Hour.format(context);
-                                }
-                              },
+                              hintText: 'website',
                               validator: (String? value) {
-                                if (value!.isEmpty) return 'required!';
+                                if (value!.isEmpty) {
+                                  return 'required!';
+                                }
                                 return null;
                               },
                               onSaved: (String? value) {
-                                _closingHours = value!;
+                                _website = value!;
                               },
-                              keyboard: TextInputType.number,
+                              keyboard: TextInputType.name,
                             ),
-                          ),
-                        ],
+                            SizedBox(height: 10),
+                            _buildTextFormField(
+                              constraints,
+                              hintText: 'description',
+                              validator: (String? value) {
+                                if (value!.isEmpty) {
+                                  return 'required!';
+                                }
+                                return null;
+                              },
+                              onSaved: (String? value) {
+                                _desc = value!;
+                              },
+                              keyboard: TextInputType.name,
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildTextFormField(
+                                    constraints,
+                                    right: false,
+                                    readOnly: true,
+                                    hintText: 'Opening time',
+                                    controller: _openTimectrl,
+                                    onTap: () async {
+                                      TimeOfDay? selectedTime24Hour =
+                                          await showTimePicker(
+                                        context: context,
+                                        initialTime: const TimeOfDay(
+                                            hour: 09, minute: 15),
+                                        builder: (BuildContext context,
+                                            Widget? child) {
+                                          return MediaQuery(
+                                            data: MediaQuery.of(context)
+                                                .copyWith(
+                                                    alwaysUse24HourFormat:
+                                                        true),
+                                            child: child!,
+                                          );
+                                        },
+                                      );
+                                      if (selectedTime24Hour != null) {
+                                        _openTimectrl.text =
+                                            selectedTime24Hour.format(context);
+                                      }
+                                    },
+                                    validator: (String? value) {
+                                      if (value!.isEmpty) return 'required!';
+                                      return null;
+                                    },
+                                    onSaved: (String? value) {
+                                      _openingHours = value!;
+                                    },
+                                    keyboard: TextInputType.number,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: _buildTextFormField(
+                                    constraints,
+                                    left: false,
+                                    readOnly: true,
+                                    hintText: 'Closing time',
+                                    controller: _closeTimectrl,
+                                    onTap: () async {
+                                      TimeOfDay? selectedTime24Hour =
+                                          await showTimePicker(
+                                        context: context,
+                                        initialTime: const TimeOfDay(
+                                            hour: 22, minute: 00),
+                                        builder: (BuildContext context,
+                                            Widget? child) {
+                                          return MediaQuery(
+                                            data: MediaQuery.of(context)
+                                                .copyWith(
+                                                    alwaysUse24HourFormat:
+                                                        true),
+                                            child: child!,
+                                          );
+                                        },
+                                      );
+                                      if (selectedTime24Hour != null) {
+                                        _closeTimectrl.text =
+                                            selectedTime24Hour.format(context);
+                                      }
+                                    },
+                                    validator: (String? value) {
+                                      if (value!.isEmpty) return 'required!';
+                                      return null;
+                                    },
+                                    onSaved: (String? value) {
+                                      _closingHours = value!;
+                                    },
+                                    keyboard: TextInputType.number,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-          // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-          // floatingActionButton: FloatingActionButton.extended(
-          //   onPressed: null,
-          //   label: const Text('Save'),
-          //   icon: const Icon(Icons.check),
-          //   backgroundColor: Colors.pink.shade50,
-          // ),
         ),
       ),
     );
@@ -253,20 +255,38 @@ class _ResDetailsState extends State<ResDetails> {
     _pickedImage = myPickedImage;
   }
 
-  void _submit() {
-    if (!_formKey.currentState!.validate()) return;
+  void _submit() async {
+    if (!_formKey.currentState!.validate() && _pickedImage != null) return;
     _formKey.currentState!.save();
-    log('closing time: $_openingHours');
-    log('opening time: $_closingHours');
-    log('resName $_resName');
-    log('desc $_desc');
-    log('website $_website');
-    // for (var item in _ingredients) {
-    //   print(item);
-    // }
-    // setState(() {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      // await Provider.of<FireStoreDB>(context, listen: false)
+      await firestore.addRes(
+        name: _resName,
+        desc: _desc,
+        website: _website,
+        openTime: _openingHours,
+        closeTime: _closingHours,
+        img: _pickedImage!,
+      );
 
-    // });
+      log('closing time: $_openingHours');
+      log('opening time: $_closingHours');
+      log('resName $_resName');
+      log('desc $_desc');
+      log('website $_website');
+      log('img: ${_pickedImage!.path}');
+      _openTimectrl.clear();
+      _closeTimectrl.clear();
+    } on Exception catch (e) {
+      print(e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   Widget _buildTextFormField(
