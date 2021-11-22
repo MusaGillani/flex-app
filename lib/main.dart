@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
               builder = (ctx) => Meals();
               return MaterialPageRoute(builder: builder);
             case '/qr':
-              builder = (ctx) => QrScanner();
+              builder = (ctx) => Qr();
               return MaterialPageRoute(builder: builder);
 
             default:

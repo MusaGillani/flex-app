@@ -116,7 +116,9 @@ class _ResDetailsState extends State<ResDetails> {
                           }
                           return null;
                         },
-                        onSaved: (String? value) {},
+                        onSaved: (String? value) {
+                          _resName = value!;
+                        },
                         keyboard: TextInputType.name,
                       ),
                       SizedBox(height: 10),
@@ -129,7 +131,9 @@ class _ResDetailsState extends State<ResDetails> {
                           }
                           return null;
                         },
-                        onSaved: (String? value) {},
+                        onSaved: (String? value) {
+                          _website = value!;
+                        },
                         keyboard: TextInputType.name,
                       ),
                       SizedBox(height: 10),
@@ -142,7 +146,9 @@ class _ResDetailsState extends State<ResDetails> {
                           }
                           return null;
                         },
-                        onSaved: (String? value) {},
+                        onSaved: (String? value) {
+                          _desc = value!;
+                        },
                         keyboard: TextInputType.name,
                       ),
                       SizedBox(height: 10),
@@ -198,7 +204,7 @@ class _ResDetailsState extends State<ResDetails> {
                                     await showTimePicker(
                                   context: context,
                                   initialTime:
-                                      const TimeOfDay(hour: 09, minute: 15),
+                                      const TimeOfDay(hour: 22, minute: 00),
                                   builder:
                                       (BuildContext context, Widget? child) {
                                     return MediaQuery(
@@ -252,6 +258,9 @@ class _ResDetailsState extends State<ResDetails> {
     _formKey.currentState!.save();
     log('closing time: $_openingHours');
     log('opening time: $_closingHours');
+    log('resName $_resName');
+    log('desc $_desc');
+    log('website $_website');
     // for (var item in _ingredients) {
     //   print(item);
     // }
