@@ -116,4 +116,124 @@ Future<void> addMeal({
 
   log('meal added!');
 }
+
+Future<List<Map<String, dynamic>>> fetchAllMeals() async {
+  final usersCollection = _firestore.collection('users');
+  final mealsCollection = _firestore.collection('meals');
+
+  /// contains the ids used to access
+  /// the docs inside meals collection
+  /// basically res names
+  List<String> restaurants = [];
+
+  /// each index represents one restaurant
+  /// each index is a list of meals
+  /// each meal is a Map itself
+  List<Map<String, dynamic>> meals = [];
+
+  final resUsers =
+      await usersCollection.where('userType', isEqualTo: 'restaurant').get();
+  resUsers.docs.forEach(
+    (res) {
+      // print(res.id);
+      restaurants.add(res.id);
+    },
+  );
+
+  // print('restaurants data');
+  // restaurants.forEach((element) {
+  //   print(element);
+  // });
+
+  /// contains the doc ids of a meal in menu collection
+
+  for (var res in restaurants) {
+    var menu = await mealsCollection.doc(res).collection('menu').get();
+
+    // print('res $res menu datas: ');
+    menu.docs.forEach((meal) {
+      // print(meal.data());
+      meals.add({
+        'resName': meal.data()['resName'],
+        'mealName': meal.data()['mealName'],
+        'price': meal.data()['price'],
+        'imageUrl': meal.data()['imageUrl'],
+        'ingredients': meal.data()['ingredients'],
+      });
+    });
+    // meals.add(meals);
+    // resMeals.;
+  }
+
+  meals.forEach((element) {
+    print(element['mealName']);
+  });
+  return meals;
+}
+
+// ?resuse this logic for customer restaurant view
+/*
+Future<List<List<Map<String, dynamic>>>> fetchAllMeals() async {
+  final usersCollection = _firestore.collection('users');
+  final mealsCollection = _firestore.collection('meals');
+
+  /// contains the ids used to access
+  /// the docs inside meals collection
+  /// basically res names
+  List<String> restaurants = [];
+
+  /// each index represents one restaurant
+  /// each index is a list of meals
+  /// each meal is a Map itself
+  List<List<Map<String, dynamic>>> meals = [];
+
+  final resUsers =
+      await usersCollection.where('userType', isEqualTo: 'restaurant').get();
+  resUsers.docs.forEach(
+    (res) {
+      // print(res.id);
+      restaurants.add(res.id);
+    },
+  );
+
+  // print('restaurants data');
+  // restaurants.forEach((element) {
+  //   print(element);
+  // });
+
+  /// contains the doc ids of a meal in menu collection
+
+  for (var res in restaurants) {
+    List<Map<String, dynamic>> resMeals = [];
+    var menu = await mealsCollection.doc(res).collection('menu').get();
+
+    // print('res $res menu datas: ');
+    menu.docs.forEach((meal) {
+      // print(meal.data());
+      resMeals.add({
+        'resName': meal.data()['resName'],
+        'mealName': meal.data()['mealName'],
+        'price': meal.data()['price'],
+        'imageUrl': meal.data()['imageUrl'],
+        'ingredients': meal.data()['ingredients'],
+      });
+    });
+    meals.add(resMeals);
+    // resMeals.;
+  }
+
+//! imp prints below DO NOT REMOVE
+  // print('all meals: ${meals.length}');
+  // // print(meals);
+  // for (var item in meals) {
+  //   // print('item: ${item.length}');
+  //   item.forEach((element) {
+  //     print(element['mealName']);
+  //     print(element['ingredients']);
+  //   });
+  // }
+
+  return meals;
+}
+ */
 // }
