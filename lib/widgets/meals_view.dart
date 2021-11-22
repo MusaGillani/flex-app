@@ -14,24 +14,6 @@ class _MealsViewState extends State<MealsView> {
   bool _isLoading = false;
   late List<Map<String, dynamic>> _meals;
   // var _mealsCount = 0;
-  final List<String> _filterOptions = [
-    'apple',
-    'cherry',
-    'banana',
-    'Strawberry',
-    'avocado',
-    'carrot',
-    'spinach',
-    'potato',
-    'almonds',
-    'walnut',
-    'pistachios',
-    'cashews',
-    'full fat milk',
-    'yogurt',
-    'ice cream',
-    'cheese',
-  ];
 
   Map<String, bool> _selectedFilters = {
     'apple': false,
@@ -152,14 +134,7 @@ class _MealsViewState extends State<MealsView> {
                                     children: _selectedFilters.keys
                                         // _filterOptions
                                         .map(
-                                          (option) =>
-                                              // SimpleDialogOption(
-                                              //   onPressed: () {
-                                              //     setState(() {});
-                                              //     // Navigator.pop(context, option);
-                                              //   },
-                                              //   child:
-                                              CheckboxListTile(
+                                          (option) => CheckboxListTile(
                                             value: _selectedFilters[option],
                                             onChanged: (val) {
                                               _applyFilters(val!, option);
@@ -167,7 +142,6 @@ class _MealsViewState extends State<MealsView> {
                                             },
                                             title: Text(option),
                                           ),
-                                          // ),
                                         )
                                         .toList(),
                                   ),

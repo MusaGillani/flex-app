@@ -171,6 +171,33 @@ Future<List<Map<String, dynamic>>> fetchAllMeals() async {
   return meals;
 }
 
+Future<List<Map<String, String>>> fetchAllRes() async {
+  final resCollection = _firestore.collection('restaurants');
+
+  List<Map<String, String>> res = [];
+
+  final resDocs = await resCollection.get();
+
+  resDocs.docs.forEach((doc) {
+    final data = doc.data();
+    res.add({
+      'resName': data['resName'],
+      'openTime': data['openTime'],
+      'closeTime': data['closeTime'],
+      'imageUrl': data['imageUrl'],
+    });
+  });
+
+  print('from firestore');
+  res.forEach((r) {
+    r.entries.toList().forEach((element) {
+      print(element);
+    });
+    print('');
+  });
+  return res;
+}
+
 // ?resuse this logic for customer restaurant view
 /*
 Future<List<List<Map<String, dynamic>>>> fetchAllMeals() async {

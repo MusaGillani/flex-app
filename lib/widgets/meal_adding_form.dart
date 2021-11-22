@@ -184,6 +184,7 @@ class _MealFormState extends State<MealForm> {
         _isLoading = true;
       });
       // await Provider.of<FireStoreDB>(context, listen: false)
+      // TODO get resName somehow and send it
       await firestore.addMeal(
         resName: 'resName',
         mealName: _mealName,

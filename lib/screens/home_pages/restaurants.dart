@@ -4,13 +4,14 @@ import 'package:provider/provider.dart';
 import '../../providers/auth.dart';
 
 import '../../widgets/restaurant_details_view.dart';
+import '../../widgets/restaurants_catalog.dart';
 
 class Restaurants extends StatelessWidget {
   const Restaurants({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     bool res = Provider.of<Auth>(context, listen: false).userMode;
-    return ResDetails();
+    return res ? ResDetails() : ResCatalog();
   }
 }
 
