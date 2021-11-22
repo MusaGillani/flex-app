@@ -45,4 +45,36 @@ Future<void> addRes({
 
   log('res added!');
 }
+
+Future<List<String>> getRes() async {
+  final String uid = _auth.currentUser!.uid;
+  final resCollection = _firestore.collection('restaurants');
+
+  final doc = await resCollection.doc(uid).get();
+  if (!doc.exists) {
+    log('no doc');
+    return ['none'];
+  }
+
+  final Map<String, dynamic> resData = doc.data()!;
+
+  // for (var item in doc.data()!.entries) {
+
+  print(resData['resName']);
+  print(resData['desc']);
+  print(resData['website']);
+  print(resData['openTime']);
+  print(resData['closeTime']);
+  print(resData['imageUrl']);
+  // }
+
+  return [
+    resData['resName'], // 0
+    resData['desc'], // 1
+    resData['website'], // 2
+    resData['openTime'], // 3
+    resData['closeTime'], // 4
+    resData['imageUrl'], // 5
+  ];
+}
 // }

@@ -10,8 +10,11 @@ import 'package:path_provider/path_provider.dart' as syspaths;
 class ImageInput extends StatefulWidget {
   final Function onSelectImage;
   final String imgPath;
-  const ImageInput(this.onSelectImage, this.imgPath, {Key? key})
-      : super(key: key);
+  const ImageInput(
+    this.onSelectImage,
+    this.imgPath, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   _ImageInputState createState() => _ImageInputState();
@@ -71,6 +74,7 @@ class _ImageInputState extends State<ImageInput> {
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(width: 3.5, color: Colors.pink.shade50),
                 ),
+
                 child: _storedImage != null
                     ? Image.file(
                         _storedImage!,
