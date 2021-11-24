@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
 import './providers/auth.dart'; //as Auth;
+import './models/Restaurant.dart';
 
 import './screens/wrapper.dart';
 import './screens/authenticate_screen.dart';
@@ -26,9 +27,18 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<Auth>(
-      create: (ctx) => Auth(),
-      child: MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Auth>(
+          create: (ctx) => Auth(),
+        ),
+        ChangeNotifierProvider<Restaurant>(
+          create: (ctx) => Restaurant(),
+        ),
+      ],
+      child:
+          // child:
+          MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flex',
         theme: ThemeData(
@@ -85,16 +95,17 @@ class MyApp extends StatelessWidget {
           }
         },
       ),
+      // ),
     );
   }
 }
 
-      // StreamBuilder(
-      //   stream: Auth.user,
-      //   builder: (ctx, authSnapshot) {
-      //     // DashboardScreen() : SplashScreen();
-      //     if (authSnapshot.hasData) return DashboardScreen();
+// StreamBuilder(
+//   stream: Auth.user,
+//   builder: (ctx, authSnapshot) {
+//     // DashboardScreen() : SplashScreen();
+//     if (authSnapshot.hasData) return DashboardScreen();
 
-      //     return SplashScreen();
-      //   },
-      // )
+//     return SplashScreen();
+//   },
+// )

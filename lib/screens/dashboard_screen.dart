@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../providers/auth.dart'; // as Auth;
 
 import './home_screen.dart';
-// import './homeNav.dart';
+import './profile_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -18,12 +18,17 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedPageIndex = 0;
   final List<Widget> _pages = [
-    // home tab body
-    // HomeNav(),
+    /// home tab body
     HomeScreen(),
+
+    ///
     Container(),
+
+    ///
     Container(),
-    Container(),
+
+    /// profile tab
+    ProfileScreen(),
   ];
 
   void _selectPage(int index) => setState(() => _selectedPageIndex = index);

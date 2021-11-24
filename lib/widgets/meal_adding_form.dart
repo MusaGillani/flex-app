@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import './image_input.dart';
 import '../providers/firestore.dart' as firestore;
+import '../models/Restaurant.dart';
 
 class MealForm extends StatefulWidget {
   const MealForm({Key? key}) : super(key: key);
@@ -203,7 +204,7 @@ class _MealFormState extends State<MealForm> {
         builder: (ctx) => AlertDialog(
           title: Text('Meal added Successfully!'),
           actions: [
-            ElevatedButton(
+            TextButton(
               onPressed: () {
                 Navigator.of(ctx).pop();
               },

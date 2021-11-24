@@ -17,7 +17,7 @@ final uuid = Uuid();
 /// Storing res details in collection named restaurants in firestore
 /// Storing res images in res_images folder in cloud storage
 /// with user uid as image name
-Future<void> addRes({
+Future<String> addRes({
   required String name,
   required String desc,
   required String website,
@@ -34,18 +34,33 @@ Future<void> addRes({
 
   final url = await ref.getDownloadURL();
 
-  await resCollection.doc(uid).set(
-    <String, String>{
-      'resName': name,
-      'desc': desc,
-      'website': website,
-      'openTime': openTime,
-      'closeTime': closeTime,
-      'imageUrl': url,
-    },
-  );
+  final doc = resCollection.doc(uid);
+  final docStatus = await doc.get();
 
+  if (docStatus.exists)
+    await doc.update(
+      <String, String>{
+        'resName': name,
+        'desc': desc,
+        'website': website,
+        'openTime': openTime,
+        'closeTime': closeTime,
+        'imageUrl': url,
+      },
+    );
+  else
+    await doc.set(
+      <String, String>{
+        'resName': name,
+        'desc': desc,
+        'website': website,
+        'openTime': openTime,
+        'closeTime': closeTime,
+        'imageUrl': url,
+      },
+    );
   log('res added!');
+  return uid;
 }
 
 Future<List<String>> getRes() async {
@@ -53,7 +68,7 @@ Future<List<String>> getRes() async {
   final resCollection = _firestore.collection('restaurants');
 
   final doc = await resCollection.doc(uid).get();
-  if (!doc.exists) {
+  if (!doc.exists || !doc.data()!.containsKey('resName')) {
     log('no doc');
     return ['none'];
   }
@@ -68,6 +83,7 @@ Future<List<String>> getRes() async {
   print(resData['openTime']);
   print(resData['closeTime']);
   print(resData['imageUrl']);
+  print(doc.id);
   // }
 
   return [
@@ -77,7 +93,27 @@ Future<List<String>> getRes() async {
     resData['openTime'], // 3
     resData['closeTime'], // 4
     resData['imageUrl'], // 5
+    doc.id, // 6
+    if (resData.containsKey('phone')) resData['phone'], // 7
+    if (!resData.containsKey('phone')) '', // 7
   ];
+}
+
+Future<void> addResPhone(String phone) async {
+  final String uid = _auth.currentUser!.uid;
+  final resCollection = _firestore.collection('restaurants');
+
+  final doc = resCollection.doc(uid);
+
+  final docStatus = await doc.get();
+  if (docStatus.exists)
+    await doc.update({
+      'phone': phone,
+    });
+  else
+    await doc.set({
+      'phone': phone,
+    });
 }
 
 Future<void> addMeal({

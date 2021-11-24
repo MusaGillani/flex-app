@@ -2,9 +2,10 @@ import 'dart:io';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 
 import '../providers/firestore.dart' as firestore;
+import '../models/Restaurant.dart';
 import './image_input.dart';
 
 class ResDetails extends StatefulWidget {
@@ -33,6 +34,7 @@ class _ResDetailsState extends State<ResDetails> {
   String _openingHours = '';
   String _closingHours = '';
   String _imgUrl = '';
+  String? _docId;
 
   @override
   void didChangeDependencies() {
@@ -307,7 +309,19 @@ class _ResDetailsState extends State<ResDetails> {
       _openingHours = resData[3];
       _closingHours = resData[4];
       _imgUrl = resData[5];
+      _docId = resData[6];
+      String? phone = resData[7];
       _readOnly = true;
+      Provider.of<Restaurant>(context, listen: false).addRes(
+        docId: _docId!,
+        resName: _resName,
+        website: _website,
+        desc: _desc,
+        openTime: _openingHours,
+        closeTime: _closingHours,
+        imageUrl: _imgUrl,
+        phone: phone,
+      );
     }
 
     setState(() {
@@ -327,7 +341,7 @@ class _ResDetailsState extends State<ResDetails> {
         _isLoading = true;
       });
       // await Provider.of<FireStoreDB>(context, listen: false)
-      await firestore.addRes(
+      _docId = await firestore.addRes(
         name: _resName,
         desc: _desc,
         website: _website,
