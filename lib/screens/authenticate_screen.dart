@@ -19,6 +19,7 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
   String _email = '';
   String _password = '';
   var _isLoading = false;
+  var _hidePass = false;
   final _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey(debugLabel: 'authform-key');
   UserMode userType = UserMode.Restaurant;
@@ -81,6 +82,7 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
                   // child: SingleChildScrollView(
                   // child:
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(
@@ -114,7 +116,8 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
                         ),
                         child: TextFormField(
                           controller: _passwordController,
-                          obscureText: _authMode == AuthMode.Login,
+                          obscureText:
+                              _authMode == AuthMode.Login ? true : _hidePass,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.grey.shade300,
@@ -125,8 +128,8 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
                             hintText: 'Password',
                           ),
                           validator: (value) {
-                            if (value!.isEmpty || value.length < 5) {
-                              return 'Password length must be 6!';
+                            if (value!.isEmpty || value.length < 8) {
+                              return 'Password length must be 8!';
                             }
                           },
                           onSaved: (value) {
@@ -141,6 +144,7 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
                             horizontal: constraints.maxWidth * 0.1,
                           ),
                           child: TextFormField(
+                            obscureText: _hidePass,
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.grey.shade300,
@@ -158,6 +162,26 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
                             onSaved: (value) {
                               _password = value!;
                             },
+                          ),
+                        ),
+                      if (_authMode == AuthMode.Signup)
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: constraints.maxWidth * 0.1,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Checkbox(
+                                value: _hidePass,
+                                onChanged: (_) {
+                                  setState(() {
+                                    _hidePass = !_hidePass;
+                                  });
+                                },
+                              ),
+                              Text('Hide Password'),
+                            ],
                           ),
                         ),
                       _userTypeSelector(),
