@@ -198,6 +198,30 @@ Future<List<Map<String, String>>> fetchAllRes() async {
   return res;
 }
 
+/// returns a list with length 0 if no meals
+/// otherwise returns a list with all meals (each meal is Map)
+Future<List<Map<String, dynamic>>> fetchSingleResMeals() async {
+  final mealsCollection = _firestore.collection('meals');
+  List<Map<String, dynamic>> meals = [];
+
+  final menu = await mealsCollection
+      .doc(_auth.currentUser!.uid)
+      .collection('menu')
+      .get();
+  if (menu.size > 0) {
+    menu.docs.forEach((meal) {
+      meals.add({
+        'resName': meal.data()['resName'],
+        'mealName': meal.data()['mealName'],
+        'price': meal.data()['price'],
+        'imageUrl': meal.data()['imageUrl'],
+        'ingredients': meal.data()['ingredients'],
+      });
+    });
+  }
+  return meals;
+}
+
 // ?resuse this logic for customer restaurant view
 /*
 Future<List<List<Map<String, dynamic>>>> fetchAllMeals() async {

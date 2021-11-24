@@ -10,7 +10,6 @@ class MealsView extends StatefulWidget {
 }
 
 class _MealsViewState extends State<MealsView> {
-  bool _isInit = true;
   bool _isLoading = false;
   late List<Map<String, dynamic>> _meals;
   // var _mealsCount = 0;
@@ -39,15 +38,6 @@ class _MealsViewState extends State<MealsView> {
     getMeals();
     super.initState();
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   if (_isInit) {
-  //     getMeals();
-  //     _isInit = false;
-  //   }
-  // }
 
   void getMeals() async {
     setState(() {

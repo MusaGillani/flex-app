@@ -198,6 +198,20 @@ class _MealFormState extends State<MealForm> {
       for (var i in _ingredients) {
         log('$i');
       }
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Meal added Successfully!'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+              child: Text('Okay'),
+            ),
+          ],
+        ),
+      );
     } on Exception catch (e) {
       print(e.toString());
     } finally {

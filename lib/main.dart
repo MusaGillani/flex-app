@@ -12,6 +12,9 @@ import './screens/home_pages/restaurants.dart';
 import './screens/home_pages/meals.dart';
 import './screens/home_pages/qr.dart';
 
+import './widgets/meal_adding_form.dart';
+import './widgets/edit_meals.dart';
+
 import './utitlities/constants.dart';
 
 Future<void> main() async {
@@ -62,6 +65,14 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(builder: builder);
             case '/qr':
               builder = (ctx) => Qr();
+              return MaterialPageRoute(builder: builder);
+
+            case '/meals/check':
+              builder = (ctx) => EditMeals();
+              return MaterialPageRoute(builder: builder);
+
+            case '/meals/add':
+              builder = (ctx) => MealForm();
               return MaterialPageRoute(builder: builder);
 
             default:
