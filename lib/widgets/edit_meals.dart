@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../providers/firestore.dart' as firestore;
 
-/// TODO
-/// delete button for deleting meals
-/// check box fro confirming
 class EditMeals extends StatefulWidget {
   EditMeals({Key? key}) : super(key: key);
 
