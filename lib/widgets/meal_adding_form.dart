@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import './image_input.dart';
 import '../providers/firestore.dart' as firestore;
 import '../models/Restaurant.dart';
@@ -13,7 +14,6 @@ class MealForm extends StatefulWidget {
   _MealFormState createState() => _MealFormState();
 }
 
-// TODO show popup when done, and pop screen
 class _MealFormState extends State<MealForm> {
   final GlobalKey<FormState> _formKey = GlobalKey(debugLabel: 'mealform-key');
 
@@ -146,7 +146,7 @@ class _MealFormState extends State<MealForm> {
                               return null;
                             },
                             onSaved: (String? value) {
-                              _price = int.parse(value!);
+                              if (value != null) _price = int.parse(value);
                             },
                             keyboard: TextInputType.number,
                           ),
@@ -180,14 +180,33 @@ class _MealFormState extends State<MealForm> {
     if (!_formKey.currentState!.validate() && _pickedImage != null) return;
     _formKey.currentState!.save();
 
+    final resName =
+        Provider.of<Restaurant>(context, listen: false).resData['resName'];
+    if (resName == null) {
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('No Restaurant Name!'),
+          content: Text('Add a restaurant name in home screen first!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+              child: Text('Okay'),
+            )
+          ],
+        ),
+      );
+      return;
+    }
     try {
       setState(() {
         _isLoading = true;
       });
       // await Provider.of<FireStoreDB>(context, listen: false)
-      // TODO get resName somehow and send it
       await firestore.addMeal(
-        resName: 'resName',
+        resName: resName,
         mealName: _mealName,
         price: _price.toString(),
         ingredients: _ingredients,

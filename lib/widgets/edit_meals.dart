@@ -88,15 +88,17 @@ class _EditMealsState extends State<EditMeals> {
                             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               ...List.generate(
-                                2,
+                                ingredients.length >= 2
+                                    ? 2
+                                    : ingredients.length,
                                 (index) => Padding(
                                   padding: const EdgeInsets.only(right: 5.0),
                                   child: Text(ingredients[index]),
                                 ),
                               ),
-                              Text('...'),
-                              SizedBox(width: 5),
-                              Text('etc'),
+                              if (ingredients.length > 2) Text('...'),
+                              if (ingredients.length > 2) SizedBox(width: 5),
+                              if (ingredients.length > 2) Text('etc'),
                             ],
                             // ingredients
                             // .map((ingredient) => Text(ingredient))
