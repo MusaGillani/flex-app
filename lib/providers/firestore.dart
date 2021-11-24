@@ -216,10 +216,27 @@ Future<List<Map<String, dynamic>>> fetchSingleResMeals() async {
         'price': meal.data()['price'],
         'imageUrl': meal.data()['imageUrl'],
         'ingredients': meal.data()['ingredients'],
+        'mealId': meal.id,
       });
     });
   }
   return meals;
+}
+
+Future<bool> deleteMeal(String mealId) async {
+  final mealsCollection = _firestore.collection('meals');
+  try {
+    await mealsCollection
+        .doc(_auth.currentUser!.uid)
+        .collection('menu')
+        .doc(mealId)
+        .delete();
+    // .get();
+    return true;
+  } on Exception catch (e) {
+    print(e.toString());
+    return false;
+  }
 }
 
 // ?resuse this logic for customer restaurant view

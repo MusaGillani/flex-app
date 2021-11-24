@@ -40,6 +40,8 @@ class _EditMealsState extends State<EditMeals> {
 
   @override
   Widget build(BuildContext context) {
+    // List ne = [];
+    // ne.
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink.shade50,
@@ -52,7 +54,7 @@ class _EditMealsState extends State<EditMeals> {
       body: _isloading
           ? Center(child: CircularProgressIndicator())
           : LayoutBuilder(
-              builder: (ctx, constrainst) {
+              builder: (ctx, constraints) {
                 if (_meals.length == 0) {
                   return Center(
                     child: Text('No meals!'),
@@ -76,13 +78,33 @@ class _EditMealsState extends State<EditMeals> {
                           ),
                           title: Text(meal['mealName'] as String),
                           subtitle: Row(
-                            children: ingredients
-                                .map((ingredient) => Text(ingredient))
-                                .toList(),
+                            // width: constraints.maxWidth * 0.5,
+                            // child: ListView.builder(
+                            //   scrollDirection: Axis.horizontal,
+                            //   itemCount: ingredients.length,
+                            //   itemBuilder: (ctx, i) =>
+                            //       Text(ingredients.toList()[i]),
+                            mainAxisSize: MainAxisSize.max,
+                            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ...List.generate(
+                                2,
+                                (index) => Padding(
+                                  padding: const EdgeInsets.only(right: 5.0),
+                                  child: Text(ingredients[index]),
+                                ),
+                              ),
+                              Text('...'),
+                              SizedBox(width: 5),
+                              Text('etc'),
+                            ],
+                            // ingredients
+                            // .map((ingredient) => Text(ingredient))
+                            // .toList(),
+                            // ),
                           ),
                           trailing: IconButton(
                             onPressed: () async {
-                              // TODO store this answer above in state and use to delte
                               var answer = await showDialog<String>(
                                 context: context,
                                 builder: (ctx) {
@@ -104,6 +126,28 @@ class _EditMealsState extends State<EditMeals> {
                                   );
                                 },
                               );
+                              if (answer == 'Yes') {
+                                var deleted =
+                                    await firestore.deleteMeal(meal['mealId']);
+                                if (!deleted) {
+                                  await showDialog<void>(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: Text('Could not delete this meal'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(ctx),
+                                          child: Text('Okay'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                } else {
+                                  setState(() {
+                                    _meals.removeAt(i);
+                                  });
+                                }
+                              }
                             },
                             icon: Icon(
                               Icons.delete,
