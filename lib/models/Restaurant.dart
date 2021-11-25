@@ -10,6 +10,7 @@ class Restaurant extends ChangeNotifier {
   String? _openTime;
   String? _closeTime;
   String? _imageUrl;
+  String? _rating;
 
   // Restaurant({
   //   required this.docId,
@@ -30,6 +31,7 @@ class Restaurant extends ChangeNotifier {
     required String imageUrl,
     String? email,
     String? phone,
+    String? rating,
   }) {
     this._docId = docId;
     this._resName = resName;
@@ -40,6 +42,7 @@ class Restaurant extends ChangeNotifier {
     this._imageUrl = imageUrl;
     this._email = _email;
     this._phone = _phone;
+    this._rating = rating;
     notifyListeners();
   }
 
@@ -48,6 +51,10 @@ class Restaurant extends ChangeNotifier {
       'resName': _resName,
       'phone': _phone,
     };
+  }
+
+  String? get rating {
+    return this._rating;
   }
 
   set resPhone(String phone) {

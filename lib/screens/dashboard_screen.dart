@@ -10,7 +10,8 @@ import './profile_screen.dart';
 import './rate_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen(this.isRes, {Key? key}) : super(key: key);
+  final bool isRes;
 
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
@@ -18,24 +19,43 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedPageIndex = 0;
-  final List<Widget> _pages = [
-    /// home tab body
-    HomeScreen(),
+  late List<Widget> _pages;
 
-    /// likes tab body
-    Container(),
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isRes)
+      _pages = [
+        /// home tab body
+        HomeScreen(),
 
-    /// rate tab body
-    RateScreen(),
+        /// likes tab body
+        Container(),
 
-    /// profile tab
-    ProfileScreen(),
-  ];
+        /// rate tab body
+        RateScreen(),
+
+        /// profile tab
+        ProfileScreen(),
+      ];
+    else
+      _pages = [
+        /// home tab body
+        HomeScreen(),
+
+        /// likes tab body
+        Container(),
+
+        /// profile tab
+        ProfileScreen(),
+      ];
+  }
 
   void _selectPage(int index) => setState(() => _selectedPageIndex = index);
 
   @override
   Widget build(BuildContext context) {
+    print(widget.isRes);
     return Scaffold(
       drawer: Drawer(
         child: ElevatedButton.icon(
@@ -77,12 +97,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             activeColor: Theme.of(context).primaryColor,
             inactiveColor: Colors.grey,
           ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.star_border_outlined),
-            title: Text('Rate'),
-            activeColor: Theme.of(context).primaryColor,
-            inactiveColor: Colors.grey,
-          ),
+          if (widget.isRes)
+            BottomNavyBarItem(
+              icon: Icon(Icons.star_border_outlined),
+              title: Text('Rate'),
+              activeColor: Theme.of(context).primaryColor,
+              inactiveColor: Colors.grey,
+            ),
           BottomNavyBarItem(
             icon: Icon(Icons.person),
             title: Text('Profile'),

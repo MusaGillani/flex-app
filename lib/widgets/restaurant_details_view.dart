@@ -311,6 +311,7 @@ class _ResDetailsState extends State<ResDetails> {
       _imgUrl = resData[5];
       _docId = resData[6];
       String? phone = resData[7];
+      String? rating = resData[8];
       _readOnly = true;
       Provider.of<Restaurant>(context, listen: false).addRes(
         docId: _docId!,
@@ -321,6 +322,7 @@ class _ResDetailsState extends State<ResDetails> {
         closeTime: _closingHours,
         imageUrl: _imgUrl,
         phone: phone,
+        rating: rating,
       );
     }
 

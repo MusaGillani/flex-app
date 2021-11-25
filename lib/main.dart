@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/login': (ctx) => AuthenticateScreen(AuthMode.Login),
           '/signup': (ctx) => AuthenticateScreen(AuthMode.Signup),
-          '/dashboard': (ctx) => DashboardScreen(),
+          // '/dashboard': (ctx) => DashboardScreen(),
         },
         onGenerateRoute: (RouteSettings settings) {
           late WidgetBuilder builder;

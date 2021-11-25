@@ -75,6 +75,21 @@ Future<void> addResRating(String uid, String rating) async {
   );
 }
 
+Future<String> getResRating(String uid) async {
+  final resCollection = _firestore.collection('restaurants');
+  final doc = resCollection.doc(uid);
+  final data = await doc.get();
+  return data['rating'];
+}
+
+Stream<DocumentSnapshot<Map<String, dynamic>>> getResRatingSync(String uid) {
+  final resCollection = _firestore.collection('restaurants');
+  final doc = resCollection.doc(uid);
+  return doc.snapshots();
+  // final data = await doc.get();
+  // return data['rating'];
+}
+
 Future<List<String>> getRes() async {
   final String uid = _auth.currentUser!.uid;
   final resCollection = _firestore.collection('restaurants');
@@ -95,6 +110,7 @@ Future<List<String>> getRes() async {
   print(resData['openTime']);
   print(resData['closeTime']);
   print(resData['imageUrl']);
+  print(resData['rating']);
   print(doc.id);
   // }
 
@@ -108,6 +124,7 @@ Future<List<String>> getRes() async {
     doc.id, // 6
     if (resData.containsKey('phone')) resData['phone'], // 7
     if (!resData.containsKey('phone')) '', // 7
+    resData['rating'], // 8
   ];
 }
 
