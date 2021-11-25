@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../providers/firestore.dart' as firestore;
 
 class MealsView extends StatefulWidget {
-  const MealsView({Key? key}) : super(key: key);
+  MealsView({this.allRes = true, this.resId, Key? key}) : super(key: key);
+  final bool allRes;
+  String? resId;
 
   @override
   _MealsViewState createState() => _MealsViewState();
@@ -43,7 +45,10 @@ class _MealsViewState extends State<MealsView> {
     setState(() {
       _isLoading = true;
     });
-    _meals = await firestore.fetchAllMeals();
+    if (widget.allRes)
+      _meals = await firestore.fetchAllMeals();
+    else
+      _meals = await firestore.fetchSingleResMeals(widget.resId!);
     setState(() {
       _isLoading = false;
     });

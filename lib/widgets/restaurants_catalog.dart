@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../providers/firestore.dart' as firestore;
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ResCatalog extends StatefulWidget {
   const ResCatalog({Key? key}) : super(key: key);
@@ -11,8 +12,9 @@ class ResCatalog extends StatefulWidget {
 
 class _ResCatalogState extends State<ResCatalog> {
   bool _isLoading = false;
+  List<bool> _saving = [];
   late List<Map<String, String>> _res;
-
+  // List<double> _ratings = [];
   @override
   void initState() {
     getRes();
@@ -24,6 +26,7 @@ class _ResCatalogState extends State<ResCatalog> {
       _isLoading = true;
     });
     _res = await firestore.fetchAllRes();
+    _res.forEach((_) => _saving.add(false));
     setState(() {
       _isLoading = false;
     });
@@ -70,6 +73,16 @@ class _ResCatalogState extends State<ResCatalog> {
                       itemCount: _res.length,
                       itemBuilder: (ctx, index) {
                         final data = _res[index];
+                        List<String> openT = data['openTime']!.split(':');
+                        List<String> closeT = data['closeTime']!.split(':');
+                        TimeOfDay openTime = TimeOfDay(
+                          hour: int.parse(openT[0]),
+                          minute: int.parse(openT[1]),
+                        );
+                        TimeOfDay closeTime = TimeOfDay(
+                          hour: int.parse(closeT[0]),
+                          minute: int.parse(closeT[1]),
+                        );
                         return Card(
                           margin: const EdgeInsets.all(10),
                           // color: Colors.pink.shade50,
@@ -138,17 +151,95 @@ class _ResCatalogState extends State<ResCatalog> {
                                       ListItemText(
                                           child: Text(data['resName']!)),
                                       // SizedBox(height: 5),
-                                      ListItemText(child: Text('Status: ')),
                                       // SizedBox(height: 5),
                                       Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           ListItemText(
-                                              child: Text(data['openTime']!)),
-                                          // Spacer(),
-                                          SizedBox(width: 5),
-                                          ListItemText(
-                                              child: Text(data['closeTime']!)),
+                                            child: Text(
+                                              _isOpen(
+                                                openTime: openTime,
+                                                closeTime: closeTime,
+                                              )
+                                                  ? 'Open'
+                                                  : 'Closed',
+                                            ),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pushNamed(
+                                                '/res/meals',
+                                                arguments: data['id'] as String,
+                                              );
+                                            },
+                                            child: Text('Meals'),
+                                            style: ElevatedButton.styleFrom(
+                                              onPrimary: Colors.white,
+                                              elevation: 0,
+                                              primary: Colors.pink.shade200,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  15,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ],
+                                      ),
+                                      Container(
+                                        width: double.infinity,
+                                        child: Row(
+                                          children: [
+                                            RatingBar.builder(
+                                              initialRating:
+                                                  double.parse(data['rating']!),
+                                              minRating: 1,
+                                              direction: Axis.horizontal,
+                                              allowHalfRating: false,
+                                              itemCount: 5,
+                                              itemSize:
+                                                  constraints.maxWidth * 0.055,
+                                              itemPadding: EdgeInsets.symmetric(
+                                                  horizontal: 2.0),
+                                              itemBuilder: (context, _) => Icon(
+                                                Icons.star,
+                                                color: Colors.pink.shade200,
+                                              ),
+                                              onRatingUpdate: (rating) {
+                                                data['rating'] =
+                                                    rating.toString();
+                                                print(data['rating']);
+                                              },
+                                            ),
+                                            IconButton(
+                                              onPressed: () async {
+                                                setState(() {
+                                                  _saving[index] = true;
+                                                });
+                                                await firestore.addResRating(
+                                                  data['id']!,
+                                                  data['rating']!,
+                                                );
+                                                setState(() {
+                                                  _saving[index] = false;
+                                                });
+                                              },
+                                              iconSize:
+                                                  constraints.maxWidth * 0.055,
+                                              padding: const EdgeInsets.all(0),
+                                              icon: _saving[index]
+                                                  ? CircularProgressIndicator()
+                                                  : Icon(
+                                                      Icons.save,
+                                                      color:
+                                                          Colors.pink.shade200,
+                                                    ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -162,6 +253,20 @@ class _ResCatalogState extends State<ResCatalog> {
               }),
       ),
     );
+  }
+
+  bool _isOpen({
+    required TimeOfDay openTime,
+    required TimeOfDay closeTime,
+  }) {
+    // print('${openTime.hour} : ${openTime.minute}');
+    // print('${closeTime.hour} : ${closeTime.minute}');
+    TimeOfDay now = TimeOfDay.now();
+    if (now.hour > openTime.hour && now.hour < closeTime.hour) return true;
+    if (now.hour == closeTime.hour && now.minute < closeTime.minute)
+      return true;
+    if (now.hour == openTime.hour && now.minute > openTime.minute) return true;
+    return false;
   }
 }
 

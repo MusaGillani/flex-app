@@ -46,6 +46,7 @@ Future<String> addRes({
         'openTime': openTime,
         'closeTime': closeTime,
         'imageUrl': url,
+        'rating': '1',
       },
     );
   else
@@ -57,10 +58,21 @@ Future<String> addRes({
         'openTime': openTime,
         'closeTime': closeTime,
         'imageUrl': url,
+        'rating': '1',
       },
     );
   log('res added!');
   return uid;
+}
+
+Future<void> addResRating(String uid, String rating) async {
+  final resCollection = _firestore.collection('restaurants');
+  final doc = resCollection.doc(uid);
+  await doc.update(
+    {
+      'rating': rating,
+    },
+  );
 }
 
 Future<List<String>> getRes() async {
@@ -221,27 +233,29 @@ Future<List<Map<String, String>>> fetchAllRes() async {
       'openTime': data['openTime'],
       'closeTime': data['closeTime'],
       'imageUrl': data['imageUrl'],
+      'id': doc.id,
+      'rating': data['rating'],
     });
   });
 
-  print('from firestore');
-  res.forEach((r) {
-    r.entries.toList().forEach((element) {
-      print(element);
-    });
-    print('');
-  });
+  // print('from firestore');
+  // res.forEach((r) {
+  //   r.entries.toList().forEach((element) {
+  //     print(element);
+  //   });
+  //   print('');
+  // });
   return res;
 }
 
 /// returns a list with length 0 if no meals
 /// otherwise returns a list with all meals (each meal is Map)
-Future<List<Map<String, dynamic>>> fetchSingleResMeals() async {
+Future<List<Map<String, dynamic>>> fetchSingleResMeals([String? resId]) async {
   final mealsCollection = _firestore.collection('meals');
   List<Map<String, dynamic>> meals = [];
 
   final menu = await mealsCollection
-      .doc(_auth.currentUser!.uid)
+      .doc(resId ?? _auth.currentUser!.uid)
       .collection('menu')
       .get();
   if (menu.size > 0) {

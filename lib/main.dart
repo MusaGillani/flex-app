@@ -15,6 +15,7 @@ import './screens/home_pages/qr.dart';
 
 import './widgets/meal_adding_form.dart';
 import './widgets/edit_meals.dart';
+import './widgets/meals_view.dart';
 
 import './utitlities/constants.dart';
 
@@ -83,6 +84,13 @@ class MyApp extends StatelessWidget {
 
             case '/meals/add':
               builder = (ctx) => MealForm();
+              return MaterialPageRoute(builder: builder);
+
+            case '/res/meals':
+              builder = (ctx) => MealsView(
+                    allRes: false,
+                    resId: settings.arguments as String,
+                  );
               return MaterialPageRoute(builder: builder);
 
             default:
