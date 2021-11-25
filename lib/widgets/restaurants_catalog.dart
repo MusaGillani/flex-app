@@ -209,8 +209,12 @@ class _ResCatalogState extends State<ResCatalog> {
                                                 color: Colors.pink.shade200,
                                               ),
                                               onRatingUpdate: (rating) {
+                                                var preRating = double.parse(
+                                                    data['rating']!);
+                                                var newRating =
+                                                    (preRating + rating) / 2;
                                                 data['rating'] =
-                                                    rating.toString();
+                                                    newRating.toString();
                                                 print(data['rating']);
                                               },
                                             ),

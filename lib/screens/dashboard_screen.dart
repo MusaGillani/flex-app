@@ -7,6 +7,7 @@ import '../providers/auth.dart'; // as Auth;
 
 import './home_screen.dart';
 import './profile_screen.dart';
+import './rate_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -21,11 +22,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     /// home tab body
     HomeScreen(),
 
-    ///
+    /// likes tab body
     Container(),
 
-    ///
-    Container(),
+    /// rate tab body
+    RateScreen(),
 
     /// profile tab
     ProfileScreen(),
