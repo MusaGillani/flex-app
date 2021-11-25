@@ -89,6 +89,7 @@ class _AuthenticateScreenState extends State<AuthenticateScreen> {
                           horizontal: constraints.maxWidth * 0.1,
                         ),
                         child: TextFormField(
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.grey.shade300,
