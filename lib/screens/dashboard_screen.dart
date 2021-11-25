@@ -36,7 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         RateScreen(),
 
         /// profile tab
-        ProfileScreen(),
+        ProfileScreen(widget.isRes),
       ];
     else
       _pages = [
@@ -47,7 +47,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Container(),
 
         /// profile tab
-        ProfileScreen(),
+        ProfileScreen(widget.isRes),
       ];
   }
 

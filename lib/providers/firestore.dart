@@ -145,6 +145,28 @@ Future<void> addResPhone(String phone) async {
     });
 }
 
+Future<void> addCusPhone(String phone) async {
+  final String uid = _auth.currentUser!.uid;
+  final usersCollection = _firestore.collection('users');
+
+  final doc = usersCollection.doc(uid);
+  await doc.update({
+    'phone': phone,
+  });
+
+  log('cus phone added');
+}
+
+Future<String> getCusPhone() async {
+  final String uid = _auth.currentUser!.uid;
+  final usersCollection = _firestore.collection('users');
+
+  final doc = usersCollection.doc(uid);
+  final data = await doc.get();
+  print(data.data()!['phone']);
+  return data.data()!['phone'];
+}
+
 Future<void> addMeal({
   required String resName,
   required String mealName,

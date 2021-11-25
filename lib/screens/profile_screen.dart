@@ -9,8 +9,8 @@ import '../providers/firestore.dart' as firestore;
 import '../models/Restaurant.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
-
+  const ProfileScreen(this.isRes, {Key? key}) : super(key: key);
+  final bool isRes;
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
@@ -24,13 +24,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _username;
   String? _phoneNo;
 
-  void getData() async {
+  void getData(bool isRes) async {
     setState(() {
       _isLoading = true;
     });
     final resData = Provider.of<Restaurant>(context).resData;
     _email = FirebaseAuth.instance.currentUser!.email;
-    _username = resData['resName'];
+    if (isRes) {
+      _username = resData['resName'];
+    }
     _phoneNo = resData['phone'];
     setState(() {
       _isLoading = false;
@@ -45,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    getData();
+    getData(widget.isRes);
     return LayoutBuilder(
       builder: (
         ctx,
@@ -68,17 +70,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             height: constraints.maxHeight * 0.4,
                             width: constraints.maxWidth * 0.8,
                           ),
-                          Text('Username'),
-                          _buildTextFormField(
-                            constraints,
-                            hintText: _username != null
-                                ? _username!
-                                : 'Enter name in Home screen',
-                            readOnly: true,
-                            validator: _readOnly ? null : (validator) {},
-                            onSaved: _readOnly ? null : (onSaved) {},
-                            keyboard: TextInputType.name,
-                          ),
+                          if (widget.isRes) ...[
+                            Text('Username'),
+                            _buildTextFormField(
+                              constraints,
+                              hintText: _username != null
+                                  ? _username!
+                                  : 'Enter name in Home screen',
+                              readOnly: true,
+                              validator: _readOnly ? null : (validator) {},
+                              onSaved: _readOnly ? null : (onSaved) {},
+                              keyboard: TextInputType.name,
+                            ),
+                          ],
                           Text('email'),
                           _buildTextFormField(
                             constraints,
@@ -137,7 +141,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
     _formKey.currentState!.save();
 
-    await firestore.addResPhone(_phoneNo!);
+    if (widget.isRes) {
+      await firestore.addResPhone(_phoneNo!);
+      // Provider.of<Restaurant>(context, listen: false).resPhone = _phoneNo!;
+    } else {
+      await firestore.addCusPhone(_phoneNo!);
+      _phoneNo = await firestore.getCusPhone();
+    }
+
+    /// using same res model for storting the cus phone
+    /// as the res model is only used in res type for other data provided
+
     Provider.of<Restaurant>(context, listen: false).resPhone = _phoneNo!;
   }
 
