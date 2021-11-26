@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../providers/firestore.dart' as firestore;
 
+// ignore: must_be_immutable
 class MealsView extends StatefulWidget {
   MealsView({this.allRes = true, this.resId, Key? key}) : super(key: key);
   final bool allRes;

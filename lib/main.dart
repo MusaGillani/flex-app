@@ -7,7 +7,6 @@ import './models/Restaurant.dart';
 
 import './screens/wrapper.dart';
 import './screens/authenticate_screen.dart';
-import './screens/dashboard_screen.dart';
 
 import './screens/home_pages/restaurants.dart';
 import './screens/home_pages/meals.dart';
