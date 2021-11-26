@@ -114,7 +114,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             keyboard: TextInputType.phone,
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              try {
+                                FirebaseAuth.instance.sendPasswordResetEmail(
+                                    email: FirebaseAuth.instance.currentUser!
+                                        .email!); // FirebaseAuth.instance.sendPasswordResetEmail(
+                                await showDialog<void>(
+                                    context: context,
+                                    builder: (ctx) {
+                                      return AlertDialog(
+                                        title: Text('Email has been sent!'),
+                                        content: Text(
+                                            'Check your inbox for ${FirebaseAuth.instance.currentUser!.email!} to reset the password'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(ctx),
+                                            child: Text('Okay'),
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              } on Exception catch (e) {
+                                // print(e.toString());
+                                await showDialog<void>(
+                                    context: context,
+                                    builder: (ctx) {
+                                      return AlertDialog(
+                                        title: Text(e.toString()),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(ctx),
+                                            child: Text('Okay'),
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              }
+                              // FirebaseAuth.instance.re
+                            },
                             child: Text('Change password'),
                           ),
                           TextButton.icon(
