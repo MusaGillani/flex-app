@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
+  final bool isRes;
+
+  const HomeScreen({Key? key, required this.isRes}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
@@ -91,7 +94,7 @@ class HomeScreen extends StatelessWidget {
                       Icons.qr_code_scanner_outlined,
                       size: deviceSize.height * 0.1125,
                     ),
-                    Text('Scan QR'),
+                    Text(isRes ? 'Add QR' : 'Scan QR'),
                   ],
                 )
                 //  Image.asset(

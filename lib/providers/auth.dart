@@ -46,7 +46,7 @@ class Auth with ChangeNotifier {
         'email': '${authResult.user!.email}',
         'userType': '$userType',
       });
-      print('signup success');
+      // print('signup success');
       _authStatus = AuthStatus.loggedIn;
       _userMode =
           userType == 'restaurant' ? UserMode.Restaurant : UserMode.Customer;
@@ -72,7 +72,7 @@ class Auth with ChangeNotifier {
       // }
       // if (!doc.exists) print('doc not exists');
       String type = doc.get('userType') as String;
-      print(type);
+      // print(type);
       if (type != userType)
         throw AuthException("not registered with $userType user type!");
       else {
@@ -80,8 +80,8 @@ class Auth with ChangeNotifier {
         _userMode =
             userType == 'restaurant' ? UserMode.Restaurant : UserMode.Customer;
         notifyListeners();
-        print('login success');
-        print('auth status: ' + _authStatus.toString());
+        // print('login success');
+        // print('auth status: ' + _authStatus.toString());
       }
       // },
       // ).onError((error, stackTrace) => throw AuthException(error.toString()));

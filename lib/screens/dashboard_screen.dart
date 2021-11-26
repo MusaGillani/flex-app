@@ -28,10 +28,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (widget.isRes)
       _pages = [
         /// home tab body
-        HomeScreen(),
-
-        /// likes tab body
-        Container(),
+        HomeScreen(isRes: widget.isRes),
 
         /// rate tab body
         RateScreen(),
@@ -42,7 +39,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     else
       _pages = [
         /// home tab body
-        HomeScreen(),
+        HomeScreen(isRes: widget.isRes),
 
         /// likes tab body
         FavoritesScreen(),
@@ -92,12 +89,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             activeColor: Theme.of(context).primaryColor,
             inactiveColor: Colors.grey,
           ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.favorite_border),
-            title: Text('Favorites'),
-            activeColor: Theme.of(context).primaryColor,
-            inactiveColor: Colors.grey,
-          ),
+          if (!widget.isRes)
+            BottomNavyBarItem(
+              icon: Icon(Icons.favorite_border),
+              title: Text('Favorites'),
+              activeColor: Theme.of(context).primaryColor,
+              inactiveColor: Colors.grey,
+            ),
           if (widget.isRes)
             BottomNavyBarItem(
               icon: Icon(Icons.star_border_outlined),
