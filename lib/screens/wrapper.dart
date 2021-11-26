@@ -13,7 +13,7 @@ class Wrapper extends StatelessWidget {
     // print('build ran inside wrapper');
     final auth = Provider.of<Auth>(context);
     final userType = Provider.of<Auth>(context).userMode;
-    print('auth status in wrapper ${auth.isAuth}');
+    // print('auth status in wrapper ${auth.isAuth}');
     return auth.isAuth ? DashboardScreen(userType) : SplashScreen();
   }
 }

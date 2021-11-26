@@ -415,6 +415,7 @@ Future<bool> toggleFavorite(String mealId) async {
 
 Future<List<Map<String, dynamic>>> fetchCusFavMeals() async {
   final String cusUid = _auth.currentUser!.uid;
+  final usersCollection = _firestore.collection('users');
   final mealsCollection = _firestore.collection('meals');
   final favoritesCollection = _firestore.collection('favorites');
   List<Map<String, dynamic>> favMeals = [];
@@ -422,36 +423,55 @@ Future<List<Map<String, dynamic>>> fetchCusFavMeals() async {
   final doc = await favoritesCollection.doc(cusUid).get();
 
   List<String> favs = [];
-
+  // print('fav meals');
   final docData = doc.data();
   if (docData == null) // no favs exist of this user
+  {
+    // print('returning');
     return favMeals;
-  else {
+  } else {
     // docData.removeWhere((key, value) => value == false);
+    // print('else');
     docData.entries.forEach((element) {
       if (element.value == true) {
+        // print('adding ${element.key}');
+
         favs.add(element.key);
       }
     });
   }
 
-  // TODO code not working from down here
-  // print statements not executing
-  final allRes = await mealsCollection.get();
-  List<String> rests = [];
-  allRes.docs.forEach((doc) {
-    print('doc.id: ${doc.id}');
-    rests.add(doc.id);
-  });
+  List<String> restaurants = [];
+  final resUsers =
+      await usersCollection.where('userType', isEqualTo: 'restaurant').get();
+  resUsers.docs.forEach(
+    (res) {
+      // print(res.id);
+      restaurants.add(res.id);
+    },
+  );
+  // final allRes = await mealsCollection.get(GetOptions(source: Source.server));
 
-  await Future.forEach(rests, (String res) async {
-    print(res);
-    var meals = await mealsCollection.doc(res).collection('menu').get();
+  // print(allRes.docs);
+  // print('size:' + allRes.size.toString());
+
+  // List<String> rests = [];
+  // await Future.forEach(allRes.docs,
+  //     (QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+  //   print('doc.id: ${doc.id}');
+  //   rests.add(doc.id);
+  // });
+  // print(rests.length);
+  // print('between');
+  for (var rests in restaurants) {
+    var meals = await mealsCollection.doc(rests).collection('menu').get();
+    // await Future.forEach(rests, (String res) async {
+    //   print(res);
     await Future.forEach(meals.docs,
         (QueryDocumentSnapshot<Map<String, dynamic>> meal) {
-      print(meal.id);
+      // print(meal.id);
       if (favs.contains(meal.id)) {
-        print(meal.data()['mealName']);
+        // print(meal.data()['mealName']);
         favMeals.add(
           {
             'resName': meal.data()['resName'],
@@ -464,7 +484,9 @@ Future<List<Map<String, dynamic>>> fetchCusFavMeals() async {
         );
       }
     });
-  });
+  }
+  // });
+  // print('returning');
   return favMeals;
 }
 // ?resuse this logic for customer restaurant view
