@@ -38,10 +38,25 @@ class _QrScannerState extends State<QrScanner> {
         ),
         centerTitle: true,
       ),
-      // TODO do something with this barcode result
       body: result != null
-          ? Container(
-              child: Text('Data: ${result!.code}'),
+          ? Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/qr/meals',
+                      arguments: result!.code as String);
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(15),
+                  primary: Colors.pink.shade200,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: Text(
+                  'Check This Restaurant:',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             )
           : Column(
               children: <Widget>[

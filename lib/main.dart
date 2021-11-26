@@ -98,9 +98,12 @@ class MyApp extends StatelessWidget {
               builder = (ctx) => QrGen();
               return MaterialPageRoute(builder: builder);
 
-            // case '/qr/upload':
-            //   builder = (ctx) => QrUpload();
-            //   return MaterialPageRoute(builder: builder);
+            case '/qr/meals':
+              builder = (ctx) => MealsView(
+                    allRes: false,
+                    resId: settings.arguments as String,
+                  );
+              return MaterialPageRoute(builder: builder);
 
             default:
               return MaterialPageRoute(

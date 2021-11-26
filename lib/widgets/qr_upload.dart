@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 // import 'package:image_picker/image_picker.dart';
 // import 'package:path/path.dart' as path;
@@ -18,7 +19,7 @@ class QrGen extends StatefulWidget {
 }
 
 class _QrGenState extends State<QrGen> {
-  final GlobalKey<FormState> _form = GlobalKey(debugLabel: '_qrform-key');
+  // final GlobalKey<FormState> _form = GlobalKey(debugLabel: '_qrform-key');
   String? _name, url;
   bool _readOnly = false;
   File? _storedImage;
@@ -26,8 +27,8 @@ class _QrGenState extends State<QrGen> {
   late Future<String> _future;
 
   void _submit() async {
-    if (!_form.currentState!.validate()) return;
-    _form.currentState!.save();
+    // if (!_form.currentState!.validate()) return;
+    // _form.currentState!.save();
 
     final qrValidationResult = QrValidator.validate(
       data: _name!,
@@ -57,6 +58,7 @@ class _QrGenState extends State<QrGen> {
       _storedImage = File(path);
       // });
       // print(_storedImage.);
+      _save();
     }
   }
 
@@ -130,126 +132,130 @@ class _QrGenState extends State<QrGen> {
                 // setState(() {
                 _readOnly = true;
                 // });
-              }
+              } else
+                _name = FirebaseAuth.instance.currentUser!.uid;
               return Center(
                 child: Container(
                   height: deviceSize.height * 0.5,
                   child: Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: deviceSize.width * 0.1),
-                    child: Form(
-                      key: _form,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (!_readOnly)
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: deviceSize.width * 0.1,
-                              ),
-                              child: TextFormField(
-                                // readOnly: _readOnly, //? true : readOnly,
-                                keyboardType: TextInputType.name,
-                                // onTap: onTap,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.grey.shade300,
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide.none,
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ),
-                                  hintText: 'Enter Restaurant Name',
-                                ),
-                                validator: (validator) {
-                                  if (validator!.isEmpty) {
-                                    return 'required!';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (onSaved) {
-                                  setState(() {
-                                    _name = onSaved;
-                                  });
-                                },
-                              ),
+                    // child: Form(
+                    //   key: _form,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (!_readOnly) ...[
+                          Text('Res ID'),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: deviceSize.width * 0.1,
                             ),
-                          SizedBox(height: 10),
-                          Flexible(
-                            child: Container(
-                              // height: 150,
-                              // width: 250,
-                              constraints: BoxConstraints(
-                                maxHeight: deviceSize.height * 0.5,
-                                maxWidth: deviceSize.width * 0.8,
+                            child: TextFormField(
+                              readOnly: true, // _readOnly, //? true : readOnly,
+                              keyboardType: TextInputType.name,
+                              // onTap: onTap,
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.grey.shade300,
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                hintText: _name!,
                               ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                border: Border.all(
-                                    width: 3.5, color: Colors.pink.shade50),
-                              ),
-                              child: _readOnly && url != null
-                                  ? Image.network(
-                                      url!,
-                                      fit: BoxFit.contain,
-                                      height: 200,
-                                      width: 200,
-                                      loadingBuilder: (ctx, child,
-                                          ImageChunkEvent? loadingProgress) {
-                                        if (loadingProgress == null)
-                                          return child;
-                                        return Center(
-                                          child: LinearProgressIndicator(
-                                            value: loadingProgress
-                                                        .expectedTotalBytes !=
-                                                    null
-                                                ? loadingProgress
-                                                        .cumulativeBytesLoaded /
-                                                    loadingProgress
-                                                        .expectedTotalBytes!
-                                                : null,
-                                          ),
-                                        );
-                                      },
-                                    )
-                                  : _name != null
-                                      ? QrImage(
-                                          data: _name!,
-                                          version: QrVersions.auto,
-                                          size: 200.0,
-                                        )
-                                      : null,
-                              alignment: Alignment.center,
+                              validator: (validator) {
+                                if (validator!.isEmpty) {
+                                  return 'required!';
+                                }
+                                return null;
+                              },
+                              onSaved: (onSaved) {
+                                setState(() {
+                                  _name = onSaved;
+                                });
+                              },
                             ),
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          if (!_readOnly) ...[
-                            ElevatedButton.icon(
-                              icon: Icon(Icons.image),
-                              label: Text('Generate'),
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.pink.shade50,
-                                onPrimary: Colors.grey.shade500,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                ),
-                              ),
-                              onPressed: _submit, //_takePicture,
-                            ),
-                            _saving
-                                ? Center(child: CircularProgressIndicator())
-                                : TextButton.icon(
-                                    label: Text('Save'),
-                                    icon: Icon(Icons.check),
-                                    onPressed: _save,
-                                    style: TextButton.styleFrom(
-                                        primary: Colors.black),
-                                  ),
-                          ]
                         ],
-                      ),
+                        SizedBox(height: 10),
+                        Flexible(
+                          child: Container(
+                            // height: 150,
+                            // width: 250,
+                            constraints: BoxConstraints(
+                              maxHeight: deviceSize.height * 0.5,
+                              maxWidth: deviceSize.width * 0.8,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(
+                                  width: 3.5, color: Colors.pink.shade50),
+                            ),
+                            child: _readOnly && url != null
+                                ? Image.network(
+                                    url!,
+                                    fit: BoxFit.contain,
+                                    height: 200,
+                                    width: 200,
+                                    loadingBuilder: (ctx, child,
+                                        ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: LinearProgressIndicator(
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : _name != null
+                                    ? QrImage(
+                                        data: _name!,
+                                        version: QrVersions.auto,
+                                        size: 200.0,
+                                      )
+                                    : null,
+                            alignment: Alignment.center,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        if (!_readOnly) ...[
+                          _saving
+                              ? Center(child: CircularProgressIndicator())
+                              : ElevatedButton.icon(
+                                  icon: Icon(Icons.save),
+                                  label: Text('save'),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.pink.shade50,
+                                    onPrimary: Colors.grey.shade500,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                  ),
+                                  onPressed: _submit, //_takePicture,
+                                ),
+                          // _saving
+                          //     ? Center(child: CircularProgressIndicator())
+                          //     : TextButton.icon(
+                          //         label: Text('Save'),
+                          //         icon: Icon(Icons.check),
+                          //         onPressed: _save,
+                          //         style: TextButton.styleFrom(
+                          //             primary: Colors.black),
+                          //       ),
+                        ]
+                      ],
                     ),
+                    // ),
                   ),
                 ),
               );

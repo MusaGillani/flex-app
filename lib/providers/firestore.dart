@@ -524,6 +524,105 @@ Future<List<Map<String, dynamic>>> fetchCusFavMeals() async {
   // print('returning');
   return favMeals;
 }
+
+// Future<List<Map<String, dynamic>>> getQrMeals(String resId) async {
+//   final mealsCollection = _firestore.collection('meals');
+//   final favoritesCollection = _firestore.collection('favorites');
+
+//   /// each index represents one restaurant
+//   /// each index is a list of meals
+//   /// each meal is a Map itself
+//   List<Map<String, dynamic>> meals = [];
+
+//   // print('restaurants data');
+//   // restaurants.forEach((element) {
+//   //   print(element);
+//   // });
+
+//   /// contains the doc ids of a meal in menu collection
+
+//   var menu = await mealsCollection.doc(resId).collection('menu').get();
+
+//   // print('res $res menu datas: ');
+//   await Future.forEach(menu.docs,
+//       (QueryDocumentSnapshot<Map<String, dynamic>> meal) async {
+//     var data;
+//     bool? fav;
+//     data = await favoritesCollection.doc(_auth.currentUser!.uid).get();
+//     if (data.exists) fav = data.data()[meal.id];
+//     if (fav == null) fav = false;
+
+//     meals.add({
+//       'resName': meal.data()['resName'],
+//       'mealName': meal.data()['mealName'],
+//       'price': meal.data()['price'],
+//       'imageUrl': meal.data()['imageUrl'],
+//       'ingredients': meal.data()['ingredients'],
+//       'mealId': meal.id,
+//       'favorite': fav,
+//     });
+//   });
+//   return meals;
+// }
+
+// Future<List<Map<String, dynamic>>> getQrMeals(String resName) async {
+//   final usersCollection = _firestore.collection('users');
+//   final mealsCollection = _firestore.collection('meals');
+//   final favoritesCollection = _firestore.collection('favorites');
+
+//   /// contains the ids used to access
+//   /// the docs inside meals collection
+//   /// basically res names
+//   List<String> restaurants = [];
+
+//   /// each index represents one restaurant
+//   /// each index is a list of meals
+//   /// each meal is a Map itself
+//   List<Map<String, dynamic>> meals = [];
+
+//   final resUsers =
+//       await usersCollection.where('userType', isEqualTo: 'restaurant').get();
+//   resUsers.docs.forEach(
+//     (res) {
+//       // print(res.id);
+//       restaurants.add(res.id);
+//     },
+//   );
+
+//   // print('restaurants data');
+//   // restaurants.forEach((element) {
+//   //   print(element);
+//   // });
+
+//   /// contains the doc ids of a meal in menu collection
+
+//   for (var res in restaurants) {
+//     var menu = await mealsCollection.doc(res).collection('menu').get();
+
+//     // print('res $res menu datas: ');
+//     await Future.forEach(menu.docs,
+//         (QueryDocumentSnapshot<Map<String, dynamic>> meal) async {
+//       var data;
+//       bool? fav;
+//       data = await favoritesCollection.doc(_auth.currentUser!.uid).get();
+//       if (data.exists) fav = data.data()[meal.id];
+//       if (fav == null) fav = false;
+
+//       if (resName.toLowerCase() == meal.data()['resName'].toLowerCase() &&
+//           resName.toUpperCase() == meal.data()['resName'].toUpperCase())
+//         meals.add({
+//           'resName': meal.data()['resName'],
+//           'mealName': meal.data()['mealName'],
+//           'price': meal.data()['price'],
+//           'imageUrl': meal.data()['imageUrl'],
+//           'ingredients': meal.data()['ingredients'],
+//           'mealId': meal.id,
+//           'favorite': fav,
+//         });
+//     });
+//   }
+//   return meals;
+// }
 // ?resuse this logic for customer restaurant view
 /*
 Future<List<List<Map<String, dynamic>>>> fetchAllMeals() async {
