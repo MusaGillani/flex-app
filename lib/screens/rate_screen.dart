@@ -19,9 +19,14 @@ class RateScreen extends StatelessWidget {
       builder: (ctx, data) {
         if (data.connectionState == ConnectionState.active) {
           final doc = data.data as DocumentSnapshot;
-          final dataMap = doc.data() as Map<String, dynamic>;
-          final rating = dataMap['rating'];
+          final dataMap, rating;
+          if (doc.data() != null) {
+            dataMap = doc.data() as Map<String, dynamic>;
 
+            rating = dataMap['rating'];
+          } else {
+            rating = '0';
+          }
           return LayoutBuilder(
             builder: (ctx, constraints) => Container(
               child: Center(
