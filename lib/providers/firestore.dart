@@ -145,6 +145,41 @@ Future<void> addResPhone(String phone) async {
     });
 }
 
+Future<void> addResQr(File img) async {
+  final String uid = _auth.currentUser!.uid;
+  final resCollection = _firestore.collection('restaurants');
+  String fileExt = path.extension(img.path);
+  final ref = _storage.ref().child('qr_images').child('$uid$fileExt');
+
+  await ref.putFile(img);
+
+  final url = await ref.getDownloadURL();
+
+  final doc = resCollection.doc(uid);
+
+  final docStatus = await doc.get();
+  if (docStatus.exists)
+    await doc.update({
+      'qr': url,
+    });
+  else
+    await doc.set({
+      'qr': url,
+    });
+}
+
+Future<String> getQr() async {
+  final String uid = _auth.currentUser!.uid;
+  final resCollection = _firestore.collection('restaurants');
+
+  final doc = resCollection.doc(uid);
+
+  final docStatus = await doc.get();
+
+  String? url = docStatus['qr'];
+  return url ?? 'none';
+}
+
 Future<void> addCusPhone(String phone) async {
   final String uid = _auth.currentUser!.uid;
   final usersCollection = _firestore.collection('users');
