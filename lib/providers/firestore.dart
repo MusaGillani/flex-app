@@ -104,14 +104,14 @@ Future<List<String>> getRes() async {
 
   // for (var item in doc.data()!.entries) {
 
-  print(resData['resName']);
-  print(resData['desc']);
-  print(resData['website']);
-  print(resData['openTime']);
-  print(resData['closeTime']);
-  print(resData['imageUrl']);
-  print(resData['rating']);
-  print(doc.id);
+  // print(resData['resName']);
+  // print(resData['desc']);
+  // print(resData['website']);
+  // print(resData['openTime']);
+  // print(resData['closeTime']);
+  // print(resData['imageUrl']);
+  // print(resData['rating']);
+  // print(doc.id);
   // }
 
   return [
@@ -163,7 +163,7 @@ Future<String> getCusPhone() async {
 
   final doc = usersCollection.doc(uid);
   final data = await doc.get();
-  print(data.data()!['phone']);
+  // print(data.data()!['phone']);
   return data.data()!['phone'];
 }
 
@@ -207,6 +207,7 @@ Future<void> addMeal({
 Future<List<Map<String, dynamic>>> fetchAllMeals() async {
   final usersCollection = _firestore.collection('users');
   final mealsCollection = _firestore.collection('meals');
+  final favoritesCollection = _firestore.collection('favorites');
 
   /// contains the ids used to access
   /// the docs inside meals collection
@@ -238,23 +239,32 @@ Future<List<Map<String, dynamic>>> fetchAllMeals() async {
     var menu = await mealsCollection.doc(res).collection('menu').get();
 
     // print('res $res menu datas: ');
-    menu.docs.forEach((meal) {
-      // print(meal.data());
+    await Future.forEach(menu.docs,
+        (QueryDocumentSnapshot<Map<String, dynamic>> meal) async {
+      var data;
+      bool? fav;
+      data = await favoritesCollection.doc(_auth.currentUser!.uid).get();
+      if (data.exists) fav = data.data()[meal.id];
+      if (fav == null) fav = false;
+
       meals.add({
         'resName': meal.data()['resName'],
         'mealName': meal.data()['mealName'],
         'price': meal.data()['price'],
         'imageUrl': meal.data()['imageUrl'],
         'ingredients': meal.data()['ingredients'],
+        'mealId': meal.id,
+        'favorite': fav,
       });
     });
     // meals.add(meals);
     // resMeals.;
   }
 
-  meals.forEach((element) {
-    print(element['mealName']);
-  });
+  // meals.forEach((element) {
+  //   print(element['mealName']);
+  // });
+  // print('ending all res fetch');
   return meals;
 }
 
@@ -265,6 +275,10 @@ Future<List<Map<String, String>>> fetchAllRes() async {
 
   final resDocs = await resCollection.get();
 
+  // res.forEach((r) {
+  //   r.entries.toList().forEach((element) {
+  //     print(element);
+  //   });
   resDocs.docs.forEach((doc) {
     final data = doc.data();
     res.add({
@@ -287,28 +301,75 @@ Future<List<Map<String, String>>> fetchAllRes() async {
   return res;
 }
 
+// ? meals are added to list after the function returns causing to reload twice
+// ? this is because in all res function after adding it jumps to next line
+// ? which is again the for loop and hence it returns the meals list with meals
+// ? here after the adding the meals there is a return statement and it returns immediately
+// ? have to stop the return before adding the meals somehow
+// ? maybe
+// ? update : bug fixed using Future.forEach()
+
 /// returns a list with length 0 if no meals
 /// otherwise returns a list with all meals (each meal is Map)
 Future<List<Map<String, dynamic>>> fetchSingleResMeals([String? resId]) async {
   final mealsCollection = _firestore.collection('meals');
+  final favoritesCollection = _firestore.collection('favorites');
   List<Map<String, dynamic>> meals = [];
 
   final menu = await mealsCollection
       .doc(resId ?? _auth.currentUser!.uid)
       .collection('menu')
       .get();
-  if (menu.size > 0) {
-    menu.docs.forEach((meal) {
-      meals.add({
-        'resName': meal.data()['resName'],
-        'mealName': meal.data()['mealName'],
-        'price': meal.data()['price'],
-        'imageUrl': meal.data()['imageUrl'],
-        'ingredients': meal.data()['ingredients'],
-        'mealId': meal.id,
-      });
+  // int i = 0;
+  // if (menu.size > 0) {
+  // print('inside if');
+  // menu.docs.forEach((meal) async {
+  //     print('inside for each');
+  //     var data;
+  //     bool? fav;
+  //     data = await favoritesCollection.doc(_auth.currentUser!.uid).get();
+  //     if (data.exists) fav = data.data()[meal.id];
+  //     if (fav == null) fav = false;
+
+  //     meals.add({
+  //       'resName': meal.data()['resName'],
+  //       'mealName': meal.data()['mealName'],
+  //       'price': meal.data()['price'],
+  //       'imageUrl': meal.data()['imageUrl'],
+  //       'ingredients': meal.data()['ingredients'],
+  //       'mealId': meal.id,
+  //       'favorite': fav,
+  //     });
+  //     print('added ${meals[i]['mealName']}');
+  //     i++;
+  //   });
+  // }
+
+  await Future.forEach(menu.docs,
+      (QueryDocumentSnapshot<Map<String, dynamic>> meal) async {
+    var data;
+    bool? fav;
+    data = await favoritesCollection.doc(_auth.currentUser!.uid).get();
+    if (data.exists) fav = data.data()[meal.id];
+    if (fav == null) fav = false;
+
+    meals.add({
+      'resName': meal.data()['resName'],
+      'mealName': meal.data()['mealName'],
+      'price': meal.data()['price'],
+      'imageUrl': meal.data()['imageUrl'],
+      'ingredients': meal.data()['ingredients'],
+      'mealId': meal.id,
+      'favorite': fav,
     });
-  }
+  });
+  // meals.forEach((element) {
+  //   print(element['mealName']);
+  // });
+  // print('meals.length: ${meals.length}');
+  // print('ending single res fetch');
+  // await task;
+
   return meals;
 }
 
@@ -326,6 +387,30 @@ Future<bool> deleteMeal(String mealId) async {
     print(e.toString());
     return false;
   }
+}
+
+Future<bool> toggleFavorite(String mealId) async {
+  final String cusUid = _auth.currentUser!.uid;
+  final favoritesCollection = _firestore.collection('favorites');
+
+  final doc = favoritesCollection.doc(cusUid);
+  final status = await doc.get();
+  bool curr;
+  if (status.exists) {
+    bool? prev = status.data()![mealId];
+    if (prev == null) prev = false;
+    doc.update({
+      mealId: !prev,
+    });
+    curr = !prev;
+  } else {
+    doc.set({
+      mealId: true,
+    });
+    curr = true;
+  }
+
+  return curr;
 }
 
 // ?resuse this logic for customer restaurant view

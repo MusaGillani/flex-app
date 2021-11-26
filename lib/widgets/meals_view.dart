@@ -49,6 +49,7 @@ class _MealsViewState extends State<MealsView> {
       _meals = await firestore.fetchAllMeals();
     else
       _meals = await firestore.fetchSingleResMeals(widget.resId!);
+    _meals.length;
     setState(() {
       _isLoading = false;
     });
@@ -63,6 +64,7 @@ class _MealsViewState extends State<MealsView> {
 
   @override
   Widget build(BuildContext context) {
+    print('build ran ');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pink.shade50,
@@ -176,7 +178,7 @@ class _MealsViewState extends State<MealsView> {
                             _selectedFilters.keys.toList().forEach((filter) {
                               // var filter = 'beef';
                               // print(ingredient);
-                              print(_selectedFilters[filter]);
+                              // print(_selectedFilters[filter]);
                               if (_selectedFilters[filter]! &&
                                   filter.toLowerCase() ==
                                       ingredient.toLowerCase())
@@ -252,9 +254,31 @@ class _MealsViewState extends State<MealsView> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              ListItemText(
-                                                  child:
-                                                      Text(data['mealName'])),
+                                              Row(
+                                                children: [
+                                                  ListItemText(
+                                                      child: Text(
+                                                          data['mealName'])),
+                                                  Spacer(),
+                                                  IconButton(
+                                                    onPressed: () async {
+                                                      bool fav = await firestore
+                                                          .toggleFavorite(
+                                                              data['mealId']);
+                                                      setState(() {
+                                                        data['favorite'] = fav;
+                                                      });
+                                                    },
+                                                    icon: Icon(
+                                                      data['favorite']
+                                                          ? Icons.favorite
+                                                          : Icons
+                                                              .favorite_border,
+                                                      color: Colors.red,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                               SizedBox(height: 5),
                                               ListItemText(
                                                   child: Text(data['resName'])),
