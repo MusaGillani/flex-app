@@ -16,6 +16,8 @@ import './widgets/meal_adding_form.dart';
 import './widgets/edit_meals.dart';
 import './widgets/meals_view.dart';
 
+import './widgets/qr_upload.dart';
+
 import './utitlities/constants.dart';
 
 Future<void> main() async {
@@ -90,6 +92,14 @@ class MyApp extends StatelessWidget {
                     allRes: false,
                     resId: settings.arguments as String,
                   );
+              return MaterialPageRoute(builder: builder);
+
+            case '/qr/gen':
+              builder = (ctx) => QrGen();
+              return MaterialPageRoute(builder: builder);
+
+            case '/qr/upload':
+              builder = (ctx) => QrUpload();
               return MaterialPageRoute(builder: builder);
 
             default:

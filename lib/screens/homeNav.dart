@@ -16,7 +16,9 @@ class HomeNav extends StatelessWidget {
         switch (settings.name) {
           case '/':
             // home screen
-            builder = (ctx) => HomeScreen();
+            builder = (ctx) => HomeScreen(
+                  isRes: true,
+                );
             return MaterialPageRoute(builder: builder);
 
           case '/restaurant':

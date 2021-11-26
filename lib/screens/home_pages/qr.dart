@@ -11,6 +11,6 @@ class Qr extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool res = Provider.of<Auth>(context, listen: false).userMode;
-    return res ? QrUpload() : QrScanner();
+    return res ? AddQR() : QrScanner();
   }
 }
